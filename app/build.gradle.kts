@@ -1,17 +1,17 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.4.20"
+    alias(libs.plugins.kotlin.serialization) apply false
 }
 
 android {
-    namespace = "com.example.portofolio_tmdbapp"
+    namespace = "com.harun.tmdbapp"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "com.example.portofolio_tmdbapp"
+        applicationId = "com.harun.tmdbapp"
         minSdk = 24
         targetSdk = 37
         versionCode = 1

@@ -1,16 +1,28 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.serialization) apply false
+}
+
+val localProps = Properties().apply {
+    val f = rootProject.file("local.properties")
+    if (f.exists()) f.inputStream().use { load(it) }
 }
 
 android {
-    namespace = "com.example.portofolio_tmdbapp.data"
+    namespace = "com.harun.tmbdbapp.data"
     compileSdk {
         version = release(37)
     }
-
+    buildFeatures { buildConfig = true }
     defaultConfig {
         minSdk = 24
-
+        buildConfigField(
+            "String",
+            "TMDB_ACCESS_TOKEN",
+            "\"${localProps.getProperty("TMDB_ACCESS_TOKEN", "")}\""
+        )
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     compileOptions {

@@ -1,6 +1,5 @@
-package com.example.portofolio_tmdbapp.ui.theme
+package com.harun.tmbdbapp.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

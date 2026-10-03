@@ -1,4 +1,4 @@
-package com.example.portofolio_tmdbapp.data
+package com.harun.tmbdbapp
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.example.portofolio_tmdbapp.data.test", appContext.packageName)
+        assertEquals("com.example.portofolio_tmdbapp", appContext.packageName)
     }
 }

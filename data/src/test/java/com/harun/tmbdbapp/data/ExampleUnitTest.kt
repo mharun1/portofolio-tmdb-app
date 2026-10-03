@@ -1,4 +1,4 @@
-package com.example.portofolio_tmdbapp
+package com.harun.tmbdbapp.data
 
 import org.junit.Test
 
