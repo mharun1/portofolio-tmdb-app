@@ -2,7 +2,7 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.serialization) apply false
+    alias(libs.plugins.kotlin.serialization)
 }
 
 val localProps = Properties().apply {
@@ -11,7 +11,7 @@ val localProps = Properties().apply {
 }
 
 android {
-    namespace = "com.harun.tmbdbapp.data"
+    namespace = "com.harun.tmdbapp.data"
     compileSdk {
         version = release(37)
     }
@@ -41,9 +41,12 @@ dependencies {
     implementation(libs.retrofit2.kotlinx.serialization.converter)
     implementation(libs.androidx.paging.runtime)
 
-    implementation(libs.androidx.appcompat)
+    /* setup logging interceptor*/
+    implementation(platform(libs.okhttp.bom))
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
+
     implementation(libs.androidx.core.ktx)
-    implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)

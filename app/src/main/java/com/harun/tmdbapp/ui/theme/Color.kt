@@ -1,4 +1,4 @@
-package com.harun.tmbdbapp.ui.theme
+package com.harun.tmdbapp.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
