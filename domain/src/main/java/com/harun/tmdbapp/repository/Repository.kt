@@ -1,7 +1,9 @@
 package com.harun.tmdbapp.repository
 
-import com.harun.tmdbapp.model.MoviesPage
+import androidx.paging.PagingData
+import com.harun.tmdbapp.model.Movie
+import kotlinx.coroutines.flow.Flow
 
 interface Repository {
-    suspend fun getPopularMovies(): MoviesPage
+    fun getPopularMovies(): Flow<PagingData<Movie>>
 }

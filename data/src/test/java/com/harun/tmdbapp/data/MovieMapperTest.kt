@@ -1,6 +1,6 @@
 package com.harun.tmdbapp.data
 
-import com.harun.tmdbapp.data.remote.mapper.toDomain
+import com.harun.tmdbapp.data.mapper.toDomain
 import com.harun.tmdbapp.data.remote.response.MovieDto
 import com.harun.tmdbapp.data.remote.response.MovieListResponse
 import org.junit.Assert.assertEquals

@@ -4,10 +4,13 @@ import com.harun.tmdbapp.data.remote.response.ConfigurationResponse
 import com.harun.tmdbapp.data.remote.response.GenreListResponse
 import com.harun.tmdbapp.data.remote.response.MovieListResponse
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 interface ApiService {
     @GET("movie/popular")
-    suspend fun getPopularMovies(): MovieListResponse
+    suspend fun getPopularMovies(
+        @Query("page") page: Int
+    ): MovieListResponse
 
     @GET("genre/movie/list")
     suspend fun getGenres(): GenreListResponse

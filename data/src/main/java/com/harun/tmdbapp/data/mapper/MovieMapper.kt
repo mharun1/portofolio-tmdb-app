@@ -1,4 +1,4 @@
-package com.harun.tmdbapp.data.remote.mapper
+package com.harun.tmdbapp.data.mapper
 
 import com.harun.tmdbapp.data.remote.response.MovieDto
 import com.harun.tmdbapp.data.remote.response.MovieListResponse

@@ -39,7 +39,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.retrofit2.kotlinx.serialization.converter)
-    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.common)
 
     /* setup logging interceptor*/
     implementation(platform(libs.okhttp.bom))
@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     testImplementation(libs.junit)
     testImplementation(libs.mockwebserver)
+    testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
 }
