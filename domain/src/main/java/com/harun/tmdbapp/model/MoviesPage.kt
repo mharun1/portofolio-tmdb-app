@@ -1,4 +1,4 @@
-package com.harun.tmdbapp
+package com.harun.tmdbapp.model
 
 data class MoviesPage(
     val movies: List<Movie>,

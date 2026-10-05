@@ -2,8 +2,8 @@ package com.harun.tmdbapp.data.remote.mapper
 
 import com.harun.tmdbapp.data.remote.response.MovieDto
 import com.harun.tmdbapp.data.remote.response.MovieListResponse
-import com.harun.tmdbapp.Movie
-import com.harun.tmdbapp.MoviesPage
+import com.harun.tmdbapp.model.Movie
+import com.harun.tmdbapp.model.MoviesPage
 
 private const val BASE_URL = "https://image.tmdb.org/t/p/"
 private const val POSTER_SIZE = "w500"
