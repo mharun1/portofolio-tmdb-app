@@ -19,9 +19,9 @@ fun CreationExtras.tmdbApplication(): TmdbApplication =
  */
 object ViewModelFactory {
      val Factory = viewModelFactory {
-         initializer {
-             val appContainer = tmdbApplication().container
-             HomeViewModel(appContainer.getPopularMoviesUseCase)
-         }
-     }
+        initializer {
+            val appContainer = tmdbApplication().container
+            HomeViewModel(appContainer.getPopularMoviesUseCase)
+        }
+    }
 }
