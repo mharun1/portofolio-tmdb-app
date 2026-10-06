@@ -1,4 +1,4 @@
-package com.harun.tmdbapp
+package com.harun.tmdbapp.core
 
 import com.harun.tmdbapp.data.repository.MovieRepository
 import com.harun.tmdbapp.data.remote.retrofit.network.Network
