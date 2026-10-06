@@ -35,19 +35,16 @@ class HomeViewModelTest {
     fun `ViewModel's movies emits what the fake repository provides`() = runTest {
         // Prepare mock movie
         val expectedPagingData = PagingData.empty<Movie>()
-        
-        // Setup Fake Repository & UseCase
+
         val fakeRepository = object : Repository {
             override fun getPopularMovies(): Flow<PagingData<Movie>> {
                 return flowOf(expectedPagingData)
             }
         }
         val useCase = GetPopularMoviesUseCase(fakeRepository)
-        
-        // Instantiate ViewModel
+
         val viewModel = HomeViewModel(useCase)
-        
-        // Collect first emission to prove it emits what we provided
+
         val emitted = viewModel.movies.first()
         
         assertNotNull("The ViewModel should emit PagingData from the repository", emitted)
