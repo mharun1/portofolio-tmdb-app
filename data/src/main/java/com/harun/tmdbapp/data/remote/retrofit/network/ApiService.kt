@@ -1,9 +1,11 @@
 package com.harun.tmdbapp.data.remote.retrofit.network
 
 import com.harun.tmdbapp.data.remote.response.ConfigurationResponse
+import com.harun.tmdbapp.data.remote.response.DetailMovieResponse
 import com.harun.tmdbapp.data.remote.response.GenreListResponse
 import com.harun.tmdbapp.data.remote.response.MovieListResponse
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
@@ -17,4 +19,9 @@ interface ApiService {
 
     @GET("configuration")
     suspend fun getImageConfiguration(): ConfigurationResponse
+
+    @GET("movie/{id}")
+    suspend fun getDetailMovie(
+        @Path("id") id: Int,
+    ): DetailMovieResponse
 }
