@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.harun.tmdbapp.R
 import com.harun.tmdbapp.ui.theme.PortofolioTMDBAppTheme
+import java.util.Locale
 
 private val genres = listOf("Horror", "Mystery", "Thriller")
 
@@ -50,8 +51,8 @@ fun MovieItem(
             contentScale = ContentScale.Crop,
             loading = { LoadingScreen() },
             modifier = Modifier
-                .width(80.dp)
-                .height(120.dp)
+                .width(100.dp)
+                .height(140.dp)
                 .clip(RoundedCornerShape(8.dp))
         )
         Spacer(Modifier.width(12.dp))
@@ -61,6 +62,7 @@ fun MovieItem(
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Medium
             )
+            Spacer(Modifier.height(4.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = Icons.Rounded.Star,
@@ -69,7 +71,7 @@ fun MovieItem(
                 )
                 Spacer(Modifier.width(3.dp))
                 Text(
-                    text = "$rating/10 IMDb",
+                    text = String.format(Locale.US, "%.1f/10 IMDb", rating),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray
                 )
@@ -100,14 +102,13 @@ fun MovieItem(
 private fun Preview() {
     PortofolioTMDBAppTheme {
         Row(modifier = Modifier.fillMaxWidth()) {
-            SubcomposeAsyncImage(
-                model = painterResource(R.drawable.img),
+            Image(
+                painter = painterResource(R.drawable.img),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                loading = { LoadingScreen() },
                 modifier = Modifier
-                    .width(80.dp)
-                    .height(120.dp)
+                    .width(100.dp)
+                    .height(140.dp)
                     .clip(RoundedCornerShape(8.dp))
             )
             Spacer(Modifier.width(12.dp))
