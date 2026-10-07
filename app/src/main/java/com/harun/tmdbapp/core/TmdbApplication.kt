@@ -1,4 +1,4 @@
-package com.harun.tmdbapp
+package com.harun.tmdbapp.core
 
 import android.app.Application
 
