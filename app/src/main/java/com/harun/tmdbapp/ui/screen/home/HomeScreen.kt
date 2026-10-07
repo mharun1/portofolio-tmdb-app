@@ -43,13 +43,13 @@ fun HomeScreen(
     when (val refresh = movies.loadState.refresh) {
         is LoadState.Error -> {
             ErrorScreen(
-                modifier = Modifier.fillMaxSize(),
+                modifier = modifier.fillMaxSize(),
                 errorMessage = "Couldn't load movies. Check your connection.",
                 onClick = { movies.retry() }
             )
         }
         is LoadState.Loading -> {
-            LoadingScreen(Modifier.fillMaxSize())
+            LoadingScreen(modifier.fillMaxSize())
         }
         is LoadState.NotLoading -> {
             if (movies.itemCount == 0) {

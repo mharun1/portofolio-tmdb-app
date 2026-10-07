@@ -24,11 +24,7 @@ fun HomeContent(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = modifier.fillMaxSize()
     ) {
-        items(
-            count = movies.itemCount,
-            // Removed the custom 'key' here to prevent crashes when the API returns duplicate movies across pages.
-            // Compose will now safely fall back to using the item's list index as the key.
-        ) { index ->
+        items(count = movies.itemCount,) { index ->
             val movie = movies[index]
             if (movie != null) {
                 MovieItem(
@@ -41,7 +37,7 @@ fun HomeContent(
         if (movies.loadState.append is LoadState.Loading) {
             item {
                 LoadingScreen(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
                 )
@@ -51,7 +47,7 @@ fun HomeContent(
         if (appendError != null) {
             item {
                 ErrorScreen(
-                    modifier = modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     errorMessage = "Couldn't load more movies. Check your connection.",
                     onClick = { movies.retry() }
                 )
