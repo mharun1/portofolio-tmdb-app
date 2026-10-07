@@ -1,16 +1,15 @@
 package com.harun.tmdbapp.ui.component
 
-import android.R.attr.contentDescription
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -46,10 +45,24 @@ fun MovieItem(
 ) {
     Row(modifier = modifier.fillMaxWidth()) {
         SubcomposeAsyncImage(
-            model = poster ?: Icons.Default.BrokenImage,
+            model = poster,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             loading = { LoadingScreen() },
+            error = {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.LightGray)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.BrokenImage,
+                        contentDescription = "Error loading poster",
+                        tint = Color.DarkGray
+                    )
+                }
+            },
             modifier = Modifier
                 .width(100.dp)
                 .height(140.dp)
@@ -71,7 +84,7 @@ fun MovieItem(
                 )
                 Spacer(Modifier.width(3.dp))
                 Text(
-                    text = String.format(Locale.US, "%.1f/10 IMDb", rating),
+                    text = String.format(Locale.US, "%.1f/10 TMDb", rating),
                     style = MaterialTheme.typography.bodyMedium,
                     color = Color.Gray
                 )
@@ -101,56 +114,10 @@ fun MovieItem(
 @Composable
 private fun Preview() {
     PortofolioTMDBAppTheme {
-        Row(modifier = Modifier.fillMaxWidth()) {
-            Image(
-                painter = painterResource(R.drawable.img),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .width(100.dp)
-                    .height(140.dp)
-                    .clip(RoundedCornerShape(8.dp))
-            )
-            Spacer(Modifier.width(12.dp))
-            Column {
-                Text(
-                    text = "Spiderman: Brand New Day",
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Medium
-                )
-                Spacer(Modifier.height(4.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Rounded.Star,
-                        contentDescription = "Star icon",
-                        tint = Color(0xFFFFC107)
-                    )
-                    Spacer(Modifier.width(3.dp))
-                    Text(
-                        text = "6.4/10 IMDb",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Gray
-                    )
-                }
-                Spacer(Modifier.height(4.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    genres.forEach { genre ->
-                        Surface(
-                            shape = RoundedCornerShape(100),
-                            color = Color(0xffdce3ff),
-                            contentColor = Color(0xff87a4e8),
-                        ) {
-                            Text(
-                                text = genre,
-                                style = MaterialTheme.typography.bodySmall,
-                                fontWeight = FontWeight.Medium,
-                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp),
-                            )
-                        }
-                        Spacer(Modifier.width(4.dp))
-                    }
-                }
-            }
-        }
+        MovieItem(
+            poster = null,
+            title = "Movie Title",
+            rating = 8.9
+        )
     }
 }

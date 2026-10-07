@@ -16,23 +16,35 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.harun.tmdbapp.core.ViewModelFactory
+import com.harun.tmdbapp.model.Movie
 import com.harun.tmdbapp.ui.component.ErrorScreen
 import com.harun.tmdbapp.ui.component.LoadingScreen
 
 @Composable
-fun HomeScreen(
+fun HomeRoute(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(factory = ViewModelFactory.Factory)
 ) {
     val movies = viewModel.movies.collectAsLazyPagingItems()
+    HomeScreen(
+        movies = movies,
+        modifier = modifier
+    )
+}
 
+@Composable
+fun HomeScreen(
+    movies: LazyPagingItems<Movie>,
+    modifier: Modifier = Modifier
+) {
     when (val refresh = movies.loadState.refresh) {
         is LoadState.Error -> {
             ErrorScreen(
                 modifier = Modifier.fillMaxSize(),
-                errorMessage = refresh.error.message ?: "Unknown error",
+                errorMessage = "Couldn't load movies. Check your connection.",
                 onClick = { movies.retry() }
             )
         }

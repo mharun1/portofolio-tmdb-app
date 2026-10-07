@@ -41,7 +41,7 @@ fun HomeContent(
         if (movies.loadState.append is LoadState.Loading) {
             item {
                 LoadingScreen(
-                    modifier = Modifier
+                    modifier = modifier
                         .fillMaxWidth()
                         .padding(16.dp)
                 )
@@ -51,8 +51,8 @@ fun HomeContent(
         if (appendError != null) {
             item {
                 ErrorScreen(
-                    modifier = Modifier.fillMaxWidth(),
-                    errorMessage = appendError.error.message ?: "Unknown error",
+                    modifier = modifier.fillMaxWidth(),
+                    errorMessage = "Couldn't load more movies. Check your connection.",
                     onClick = { movies.retry() }
                 )
             }

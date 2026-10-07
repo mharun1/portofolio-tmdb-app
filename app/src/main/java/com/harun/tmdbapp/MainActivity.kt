@@ -11,7 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.harun.tmdbapp.ui.screen.home.HomeScreen
+import com.harun.tmdbapp.ui.screen.home.HomeRoute
 import com.harun.tmdbapp.ui.theme.PortofolioTMDBAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             PortofolioTMDBAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    HomeScreen(Modifier.padding(innerPadding))
+                    HomeRoute(Modifier.padding(innerPadding))
                 }
             }
         }
