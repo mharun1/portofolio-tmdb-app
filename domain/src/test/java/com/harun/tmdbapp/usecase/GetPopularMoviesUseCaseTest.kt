@@ -2,6 +2,7 @@ package com.harun.tmdbapp.usecase
 
 import androidx.paging.PagingData
 import com.harun.tmdbapp.model.Movie
+import com.harun.tmdbapp.model.MovieDetail
 import com.harun.tmdbapp.repository.Repository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -17,6 +18,10 @@ class GetPopularMoviesUseCaseTest {
         val fakeRepository = object : Repository {
             override fun getPopularMovies(): Flow<PagingData<Movie>> {
                 return expectedFlow
+            }
+
+            override suspend fun getDetailMovie(id: Int): MovieDetail {
+                throw NotImplementedError()
             }
         }
 
