@@ -2,6 +2,7 @@ package com.harun.tmdbapp.data.paging
 
 import androidx.paging.PagingSource
 import com.harun.tmdbapp.data.remote.response.ConfigurationResponse
+import com.harun.tmdbapp.data.remote.response.DetailMovieResponse
 import com.harun.tmdbapp.data.remote.response.GenreListResponse
 import com.harun.tmdbapp.data.remote.response.MovieDto
 import com.harun.tmdbapp.data.remote.response.MovieListResponse
@@ -36,6 +37,10 @@ class MoviePagingSourceTest {
         }
         
         override suspend fun getImageConfiguration(): ConfigurationResponse {
+            throw NotImplementedError()
+        }
+
+        override suspend fun getDetailMovie(id: Int, appendToResponse: String): DetailMovieResponse {
             throw NotImplementedError()
         }
     }

@@ -23,5 +23,6 @@ interface ApiService {
     @GET("movie/{id}")
     suspend fun getDetailMovie(
         @Path("id") id: Int,
+        @Query("append_to_response") appendToResponse: String = "credits"
     ): DetailMovieResponse
 }

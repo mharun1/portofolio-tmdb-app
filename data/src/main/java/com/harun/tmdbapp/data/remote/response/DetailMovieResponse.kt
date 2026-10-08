@@ -7,21 +7,22 @@ import kotlinx.serialization.Serializable
 data class DetailMovieResponse(
     val id: Int,
     @SerialName("backdrop_path")
-    val backdropUrl: String?,
+    val backdropUrl: String? = null,
     val title: String,
     val overview: String,
     val genres: List<GenreDto>,
-    val runtime: Int?,
+    val runtime: Int? = 0,
     @SerialName("vote_average")
     val rating: Double,
     @SerialName("release_date")
     val releaseDate: String,
     @SerialName("spoken_languages")
     val language: List<LanguageRef>,
+    val credits: CreditsListResponse? = null
 )
 
 @Serializable
 data class LanguageRef(
     @SerialName("english_name")
-    val englishName: String?,
+    val englishName: String? = null,
 )

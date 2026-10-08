@@ -3,7 +3,7 @@ package com.harun.tmdbapp.data.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.harun.tmdbapp.data.mapper.detail.toDomain
+import com.harun.tmdbapp.data.mapper.toDomain
 import com.harun.tmdbapp.data.paging.MoviePagingSource
 import com.harun.tmdbapp.data.remote.retrofit.network.ApiService
 import com.harun.tmdbapp.model.Movie

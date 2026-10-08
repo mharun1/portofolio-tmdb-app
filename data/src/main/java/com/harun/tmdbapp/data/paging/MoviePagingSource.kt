@@ -2,7 +2,7 @@ package com.harun.tmdbapp.data.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.harun.tmdbapp.data.mapper.list.toDomain
+import com.harun.tmdbapp.data.mapper.toDomain
 import com.harun.tmdbapp.data.remote.retrofit.network.ApiService
 import com.harun.tmdbapp.model.Movie
 import kotlinx.serialization.SerializationException

@@ -1,4 +1,4 @@
-package com.harun.tmdbapp.data.mapper.list
+package com.harun.tmdbapp.data.mapper
 
 import com.harun.tmdbapp.model.Movie
 
