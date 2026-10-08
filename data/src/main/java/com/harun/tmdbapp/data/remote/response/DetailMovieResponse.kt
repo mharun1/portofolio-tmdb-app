@@ -10,14 +10,14 @@ data class DetailMovieResponse(
     val backdropUrl: String? = null,
     val title: String,
     val overview: String,
-    val genres: List<GenreDto>,
-    val runtime: Int? = 0,
+    val genres: List<GenreDto> = emptyList(),
+    val runtime: Int? = null,
     @SerialName("vote_average")
     val rating: Double,
     @SerialName("release_date")
     val releaseDate: String,
     @SerialName("spoken_languages")
-    val language: List<LanguageRef>,
+    val languages: List<LanguageRef> = emptyList(),
     val credits: CreditsListResponse? = null
 )
 

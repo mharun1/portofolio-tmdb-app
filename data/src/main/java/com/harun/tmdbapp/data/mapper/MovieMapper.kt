@@ -13,6 +13,10 @@ private const val POSTER_SIZE = "w500"
 private const val BACKDROP_SIZE = "w780"
 private const val PROFILE_SIZE = "w185"
 
+// TMDB credits are ordered by billing. We cap at 10 to keep the detail screen's horizontal
+// cast row fast and focused on the principal cast, preventing excessive image requests for minor roles.
+private const val MAX_CAST_COUNT = 10
+
 fun MovieDto.toDomain(): Movie {
     return Movie(
         id = id,
@@ -36,12 +40,12 @@ fun DetailMovieResponse.toDomain(): MovieDetail = MovieDetail(
     backdropUrl = backdropUrl.toUrl(BACKDROP_SIZE),
     title = title,
     summary = overview,
-    genre = genres.map { it.name },
-    duration = runtime,
+    genres = genres.map { it.name },
+    runtimeMinutes = runtime,
     rating = rating,
     releaseDate = releaseDate,
-    language = language.mapNotNull { it.englishName },
-    cast = credits?.cast?.map { it.toDomain() } ?: emptyList()
+    languages = languages.mapNotNull { it.englishName },
+    cast = credits?.cast?.take(MAX_CAST_COUNT)?.map { it.toDomain() } ?: emptyList()
 )
 
 fun CastDto.toDomain(): CastMember = CastMember(

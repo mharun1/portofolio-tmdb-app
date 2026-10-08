@@ -27,7 +27,7 @@ class DetailMapperTest {
             runtime = 148,
             rating = 8.8,
             releaseDate = "2010-07-16",
-            language = listOf(
+            languages = listOf(
                 LanguageRef(englishName = "English"),
                 LanguageRef(englishName = "Japanese")
             ),
@@ -49,11 +49,11 @@ class DetailMapperTest {
         assertEquals("https://image.tmdb.org/t/p/w780/backdrop.jpg", domain.backdropUrl)
         assertEquals("Inception", domain.title)
         assertEquals("A mind-bending thriller", domain.summary)
-        assertEquals(listOf("Action", "Sci-Fi"), domain.genre)
-        assertEquals(148, domain.duration)
+        assertEquals(listOf("Action", "Sci-Fi"), domain.genres)
+        assertEquals(148, domain.runtimeMinutes)
         assertEquals(8.8, domain.rating, 0.0)
         assertEquals("2010-07-16", domain.releaseDate)
-        assertEquals(listOf("English", "Japanese"), domain.language)
+        assertEquals(listOf("English", "Japanese"), domain.languages)
         assertEquals(1, domain.cast.size)
 
         val castMember = domain.cast.first()
@@ -74,7 +74,7 @@ class DetailMapperTest {
             runtime = 100,
             rating = 7.0,
             releaseDate = "2024-01-01",
-            language = emptyList(),
+            languages = emptyList(),
             credits = CreditsListResponse(
                 cast = listOf(
                     CastDto(
@@ -104,14 +104,14 @@ class DetailMapperTest {
             runtime = null,
             rating = 7.0,
             releaseDate = "2024-01-01",
-            language = emptyList(),
+            languages = emptyList(),
             credits = null
         )
 
         val responseWithZeroRuntime = responseWithNullRuntime.copy(runtime = 0)
 
-        assertNull(responseWithNullRuntime.toDomain().duration)
-        assertEquals(0, responseWithZeroRuntime.toDomain().duration)
+        assertNull(responseWithNullRuntime.toDomain().runtimeMinutes)
+        assertEquals(0, responseWithZeroRuntime.toDomain().runtimeMinutes)
     }
 
     @Test
@@ -125,7 +125,7 @@ class DetailMapperTest {
             runtime = 90,
             rating = 6.5,
             releaseDate = "2024-01-01",
-            language = emptyList(),
+            languages = emptyList(),
             credits = null
         )
 
@@ -135,5 +135,39 @@ class DetailMapperTest {
 
         assertTrue(responseNullCredits.toDomain().cast.isEmpty())
         assertTrue(responseEmptyCast.toDomain().cast.isEmpty())
+    }
+
+    @Test
+    fun `cast is capped at 10 and preserves billing order when more than 10 are provided`() {
+        val fifteenCastMembers = (0 until 15).map { index ->
+            CastDto(
+                id = index,
+                name = "Actor $index",
+                character = "Character $index",
+                picture = null
+            )
+        }
+
+        val response = DetailMovieResponse(
+            id = 1,
+            backdropUrl = null,
+            title = "Ensemble Movie",
+            overview = "Overview",
+            genres = emptyList(),
+            runtime = 120,
+            rating = 8.0,
+            releaseDate = "2024-01-01",
+            languages = emptyList(),
+            credits = CreditsListResponse(cast = fifteenCastMembers)
+        )
+
+        val domain = response.toDomain()
+
+        assertEquals(10, domain.cast.size)
+        domain.cast.forEachIndexed { index, castMember ->
+            assertEquals(index, castMember.id)
+            assertEquals("Actor $index", castMember.name)
+            assertEquals("Character $index", castMember.character)
+        }
     }
 }

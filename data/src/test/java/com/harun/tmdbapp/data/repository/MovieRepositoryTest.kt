@@ -38,7 +38,7 @@ class MovieRepositoryTest {
                 runtime = 148,
                 rating = 8.8,
                 releaseDate = "2010-07-16",
-                language = listOf(LanguageRef(englishName = "English")),
+                languages = listOf(LanguageRef(englishName = "English")),
                 credits = creditsResponse
             )
         }
