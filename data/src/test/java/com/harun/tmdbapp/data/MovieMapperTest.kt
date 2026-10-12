@@ -58,20 +58,19 @@ class MovieMapperTest {
     }
     
     @Test
-    fun `id and genreIds come through the mapper unchanged`() {
-        val expectedId = 42
-        val expectedGenreIds = listOf(1, 3, 5)
+    fun `genreIds are correctly mapped to genre names using genreMap`() {
+        val genreMap = mapOf(1 to "Action", 3 to "Adventure", 5 to "Comedy")
         val dto = MovieDto(
-            id = expectedId,
+            id = 42,
             title = "Movie ID",
             poster = null,
-            genreIds = expectedGenreIds,
+            genreIds = listOf(1, 3, 5, 999),
             rating = 8.6
         )
         
-        val movie = dto.toDomain()
+        val movie = dto.toDomain(genreMap)
         
-        assertEquals(expectedId, movie.id)
-        assertEquals(expectedGenreIds, movie.genreIds)
+        assertEquals(42, movie.id)
+        assertEquals(listOf("Action", "Adventure", "Comedy"), movie.genres)
     }
 }

@@ -1,6 +1,6 @@
 package com.harun.tmdbapp.data.mapper
 
-import com.harun.tmdbapp.data.helper.toUrl
+import com.harun.tmdbapp.data.utils.toUrl
 import com.harun.tmdbapp.data.remote.response.CastDto
 import com.harun.tmdbapp.data.remote.response.DetailMovieResponse
 import com.harun.tmdbapp.data.remote.response.MovieDto
@@ -13,23 +13,21 @@ private const val POSTER_SIZE = "w500"
 private const val BACKDROP_SIZE = "w780"
 private const val PROFILE_SIZE = "w185"
 
-// TMDB credits are ordered by billing. We cap at 10 to keep the detail screen's horizontal
-// cast row fast and focused on the principal cast, preventing excessive image requests for minor roles.
 private const val MAX_CAST_COUNT = 10
 
-fun MovieDto.toDomain(): Movie {
+fun MovieDto.toDomain(genreMap: Map<Int, String> = emptyMap()): Movie {
     return Movie(
         id = id,
         title = title,
         posterUrl = poster.toUrl(POSTER_SIZE),
-        genreIds = genreIds,
+        genres = genreIds.mapNotNull { genreMap[it] },
         rating = rating
     )
 }
 
-fun MovieListResponse.toDomain(): MoviesPage {
+fun MovieListResponse.toDomain(genreMap: Map<Int, String> = emptyMap()): MoviesPage {
     return MoviesPage(
-        movies = results.map { it.toDomain() },
+        movies = results.map { it.toDomain(genreMap) },
         page = page,
         totalPages = totalPages
     )

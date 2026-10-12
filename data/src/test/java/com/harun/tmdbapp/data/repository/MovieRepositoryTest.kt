@@ -9,6 +9,7 @@ import com.harun.tmdbapp.data.remote.response.GenreListResponse
 import com.harun.tmdbapp.data.remote.response.LanguageRef
 import com.harun.tmdbapp.data.remote.response.MovieListResponse
 import com.harun.tmdbapp.data.remote.retrofit.network.ApiService
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -55,19 +56,24 @@ class MovieRepositoryTest {
 
         val result = repository.getDetailMovie(101)
 
-        assertEquals(101, result.id)
-        assertEquals("Inception", result.title)
-        assertEquals("https://image.tmdb.org/t/p/w780/backdrop.jpg", result.backdropUrl)
-        assertEquals(1, result.cast.size)
-        assertEquals("Leonardo DiCaprio", result.cast.first().name)
+        assertTrue(result.isSuccess)
+        val movie = result.getOrThrow()
+        assertEquals(101, movie.id)
+        assertEquals("Inception", movie.title)
+        assertEquals("https://image.tmdb.org/t/p/w780/backdrop.jpg", movie.backdropUrl)
+        assertEquals(1, movie.cast.size)
+        assertEquals("Leonardo DiCaprio", movie.cast.first().name)
     }
 
-    @Test(expected = IOException::class)
-    fun `getDetailMovie throws exception when details request fails`() = runTest {
+    @Test
+    fun `getDetailMovie failure returns Result failure when details request fails`() = runTest {
         val fakeApi = FakeApiService().apply { shouldThrowException = true }
         val repository = MovieRepository(fakeApi)
 
-        repository.getDetailMovie(101)
+        val result = repository.getDetailMovie(101)
+
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is IOException)
     }
 
     @Test
@@ -77,8 +83,25 @@ class MovieRepositoryTest {
 
         val result = repository.getDetailMovie(101)
 
-        assertEquals(101, result.id)
-        assertEquals("Inception", result.title)
-        assertTrue(result.cast.isEmpty())
+        assertTrue(result.isSuccess)
+        val movie = result.getOrThrow()
+        assertEquals(101, movie.id)
+        assertEquals("Inception", movie.title)
+        assertTrue(movie.cast.isEmpty())
+    }
+
+    @Test(expected = CancellationException::class)
+    fun `getDetailMovie does not catch CancellationException`() = runTest {
+        val fakeApi = object : ApiService {
+            override suspend fun getDetailMovie(id: Int, appendToResponse: String): DetailMovieResponse {
+                throw CancellationException("Cancelled")
+            }
+            override suspend fun getPopularMovies(page: Int): MovieListResponse = throw NotImplementedError()
+            override suspend fun getGenres(): GenreListResponse = throw NotImplementedError()
+            override suspend fun getImageConfiguration(): ConfigurationResponse = throw NotImplementedError()
+        }
+        val repository = MovieRepository(fakeApi)
+
+        repository.getDetailMovie(101)
     }
 }

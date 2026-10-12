@@ -1,6 +1,5 @@
 package com.harun.tmdbapp.ui.component
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,16 +24,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
-import com.harun.tmdbapp.R
 import com.harun.tmdbapp.ui.theme.PortofolioTMDBAppTheme
 import java.util.Locale
-
-private val genres = listOf("Horror", "Mystery", "Thriller")
 
 @Composable
 fun MovieItem(
@@ -42,6 +37,7 @@ fun MovieItem(
     poster: String?,
     title: String,
     rating: Double,
+    genres: List<String> = emptyList(),
 ) {
     Row(modifier = modifier.fillMaxWidth()) {
         SubcomposeAsyncImage(
@@ -89,23 +85,26 @@ fun MovieItem(
                     color = Color.Gray
                 )
             }
-            /*Row(verticalAlignment = Alignment.CenterVertically) {
-                genres.forEach { genre ->
-                    Surface(
-                        shape = RoundedCornerShape(100),
-                        color = Color(0xffdce3ff),
-                        contentColor = Color(0xff87a4e8),
-                    ) {
-                        Text(
-                            text = genre,
-                            style = MaterialTheme.typography.bodySmall,
-                            fontWeight = FontWeight.Medium,
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp),
-                        )
+            if (genres.isNotEmpty()) {
+                Spacer(Modifier.height(8.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    genres.take(3).forEach { genre ->
+                        Surface(
+                            shape = RoundedCornerShape(100),
+                            color = Color(0xffdce3ff),
+                            contentColor = Color(0xff87a4e8),
+                        ) {
+                            Text(
+                                text = genre,
+                                style = MaterialTheme.typography.bodySmall,
+                                fontWeight = FontWeight.Medium,
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp),
+                            )
+                        }
+                        Spacer(Modifier.width(4.dp))
                     }
-                    Spacer(Modifier.width(4.dp))
                 }
-            }*/
+            }
         }
     }
 }
@@ -117,7 +116,8 @@ private fun Preview() {
         MovieItem(
             poster = null,
             title = "Movie Title",
-            rating = 8.9
+            rating = 8.9,
+            genres = listOf("Action", "Drama")
         )
     }
 }

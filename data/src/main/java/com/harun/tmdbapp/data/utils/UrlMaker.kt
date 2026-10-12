@@ -1,4 +1,4 @@
-package com.harun.tmdbapp.data.helper
+package com.harun.tmdbapp.data.utils
 
 private const val BASE_URL = "https://image.tmdb.org/t/p/"
 

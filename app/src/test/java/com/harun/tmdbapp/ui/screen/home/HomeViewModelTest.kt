@@ -29,7 +29,7 @@ class HomeViewModelTest {
                 id = 1,
                 title = "Test Movie",
                 posterUrl = null,
-                genreIds = emptyList(),
+                genres = emptyList(),
                 rating = 9.0
             )
             val expectedPagingData = PagingData.from(listOf(testMovie))
@@ -39,7 +39,7 @@ class HomeViewModelTest {
                     return flowOf(expectedPagingData)
                 }
 
-                override suspend fun getDetailMovie(id: Int): MovieDetail {
+                override suspend fun getDetailMovie(id: Int): Result<MovieDetail> {
                     throw NotImplementedError()
                 }
             }
