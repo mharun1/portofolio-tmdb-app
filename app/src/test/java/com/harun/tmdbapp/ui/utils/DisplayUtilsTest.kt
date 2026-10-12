@@ -27,7 +27,7 @@ class DisplayUtilsTest {
 
     @Test
     fun `toDisplayDate formats valid date correctly`() {
-        assertEquals("2024 05 15", "2024-05-15".toDisplayDate())
+        assertEquals("15 May 2024", "2024-05-15".toDisplayDate())
     }
 
     @Test

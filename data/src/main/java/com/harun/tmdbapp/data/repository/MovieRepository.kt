@@ -23,6 +23,8 @@ class MovieRepository(
             apiService.getGenres().genres
                 .associate { it.id to it.name }
                 .also { genreCache = it }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             emptyMap()
         }

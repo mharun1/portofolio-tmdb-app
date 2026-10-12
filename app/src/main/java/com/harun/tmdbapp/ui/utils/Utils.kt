@@ -1,15 +1,11 @@
 package com.harun.tmdbapp.ui.utils
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-@RequiresApi(Build.VERSION_CODES.O)
-private val formatter = DateTimeFormatter.ofPattern("yyyy MM dd", Locale("id", "ID"))
+private val formatter = DateTimeFormatter.ofPattern("dd MMM yyyy", Locale.ENGLISH)
 
-@RequiresApi(Build.VERSION_CODES.O)
 fun String?.toDisplayDate(): String {
     if (this.isNullOrBlank()) return "Unknown"
 
