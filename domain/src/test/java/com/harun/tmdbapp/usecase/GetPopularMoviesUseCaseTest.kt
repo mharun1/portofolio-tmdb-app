@@ -20,7 +20,7 @@ class GetPopularMoviesUseCaseTest {
                 return expectedFlow
             }
 
-            override suspend fun getDetailMovie(id: Int): MovieDetail {
+            override suspend fun getDetailMovie(id: Int): Result<MovieDetail> {
                 throw NotImplementedError()
             }
         }

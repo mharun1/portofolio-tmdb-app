@@ -24,13 +24,14 @@ fun HomeContent(
         verticalArrangement = Arrangement.spacedBy(12.dp),
         modifier = modifier.fillMaxSize()
     ) {
-        items(count = movies.itemCount,) { index ->
+        items(count = movies.itemCount) { index ->
             val movie = movies[index]
             if (movie != null) {
                 MovieItem(
                     poster = movie.posterUrl,
                     title = movie.title,
-                    rating = movie.rating
+                    rating = movie.rating,
+                    genres = movie.genres
                 )
             }
         }

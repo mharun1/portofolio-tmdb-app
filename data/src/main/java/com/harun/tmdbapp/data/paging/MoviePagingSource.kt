@@ -12,13 +12,15 @@ import java.io.IOException
 private const val MAX_TMDB_PAGES = 500
 
 class MoviePagingSource(
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    private val getGenres: suspend () -> Map<Int, String> = { emptyMap() }
 ): PagingSource<Int, Movie>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
         val page = params.key ?: 1
 
         return try {
-            val response = apiService.getPopularMovies(page).toDomain()
+            val genreMap = getGenres()
+            val response = apiService.getPopularMovies(page).toDomain(genreMap)
             val lastPage = minOf(response.totalPages, MAX_TMDB_PAGES)
 
             LoadResult.Page(
