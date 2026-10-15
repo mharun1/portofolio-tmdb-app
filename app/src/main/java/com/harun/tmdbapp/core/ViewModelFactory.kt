@@ -25,11 +25,15 @@ object ViewModelFactory {
             HomeViewModel(appContainer.getPopularMoviesUseCase)
         }
     }
+
     fun detailViewModelFactory(movieId: Int): ViewModelProvider.Factory =
         viewModelFactory {
             initializer {
-                // Retrieve container from CreationExtras and let AppContainer build it:
-                tmdbApplication().container.detailViewModelFactory(movieId).create(DetailViewModel::class.java, this)
+                val appContainer = tmdbApplication().container
+                DetailViewModel(
+                    movieId = movieId,
+                    getMovieDetailUseCase = appContainer.getMovieDetailUseCase
+                )
             }
         }
 }

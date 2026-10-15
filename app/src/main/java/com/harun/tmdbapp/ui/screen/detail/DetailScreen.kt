@@ -60,7 +60,6 @@ fun DetailScreen(
                 modifier = modifier
                     .fillMaxSize()
                     .padding(24.dp),
-                contentAlignment = Alignment.Center,
             ) {
                 Column {
                     Text(text = movie.title)
