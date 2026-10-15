@@ -19,6 +19,7 @@ import com.harun.tmdbapp.ui.component.MovieItem
 fun HomeContent(
     modifier: Modifier = Modifier,
     movies: LazyPagingItems<Movie>,
+    onItemClick: (Int) -> Unit
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -31,7 +32,8 @@ fun HomeContent(
                     poster = movie.posterUrl,
                     title = movie.title,
                     rating = movie.rating,
-                    genres = movie.genres
+                    genres = movie.genres,
+                    onItemClick = { onItemClick(movie.id) }
                 )
             }
         }
