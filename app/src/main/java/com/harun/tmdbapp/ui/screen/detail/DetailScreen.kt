@@ -5,14 +5,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.harun.tmdbapp.core.ViewModelFactory.detailViewModelFactory
 import com.harun.tmdbapp.ui.component.ErrorScreen
@@ -28,13 +28,15 @@ fun DetailRoute(
         factory = detailViewModelFactory(movieId)
     ),
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-    DetailScreen(
-        modifier = modifier,
-        uiState = uiState,
-        onRetry = viewModel::retry,
-        onBack = onBack
-    )
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    Scaffold(modifier = modifier.fillMaxSize()) { innerPadding ->
+        DetailScreen(
+            modifier = Modifier.padding(innerPadding),
+            uiState = uiState,
+            onRetry = viewModel::retry,
+            onBack = onBack
+        )
+    }
 }
 
 @Composable
@@ -47,12 +49,13 @@ fun DetailScreen(
     when (uiState) {
         is DetailUiState.Error -> {
             ErrorScreen(
+                modifier = modifier.fillMaxSize(),
                 errorMessage = uiState.errorMessage,
                 onClick = onRetry,
             )
         }
         DetailUiState.Loading -> {
-            LoadingScreen()
+            LoadingScreen(modifier = modifier.fillMaxSize())
         }
         is DetailUiState.Success -> {
             val movie = uiState.movieDetail
@@ -70,16 +73,16 @@ fun DetailScreen(
                     Button(onClick = onBack) {
                         Text("Back to Home")
                     }
-
                 }
             }
         }
     }
 }
+
 @Preview
 @Composable
 private fun Preview() {
-    PortofolioTMDBAppTheme() {
+    PortofolioTMDBAppTheme {
         DetailScreen(
             uiState = DetailUiState.Loading,
             onBack = { },

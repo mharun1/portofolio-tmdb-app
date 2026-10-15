@@ -34,7 +34,7 @@ fun HomeRoute(
     Scaffold(modifier = modifier.fillMaxSize()) { innerPadding ->
         HomeScreen(
             movies = movies,
-            modifier = modifier.padding(innerPadding),
+            modifier = Modifier.padding(innerPadding),
             onItemClick = onItemClick
         )
     }
