@@ -46,6 +46,7 @@ dependencies {
     /* coil + viewmodel */
     implementation(libs.coil.compose)
     implementation(libs.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
 
     /* setup navigation3 */
     implementation(libs.androidx.navigation3.ui)

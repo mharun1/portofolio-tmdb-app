@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,21 +27,26 @@ import com.harun.tmdbapp.ui.component.LoadingScreen
 @Composable
 fun HomeRoute(
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = viewModel(factory = ViewModelFactory.Factory)
+    viewModel: HomeViewModel = viewModel(factory = ViewModelFactory.Factory),
+    onItemClick: (Int) -> Unit
 ) {
     val movies = viewModel.movies.collectAsLazyPagingItems()
-    HomeScreen(
-        movies = movies,
-        modifier = modifier
-    )
+    Scaffold(modifier = modifier.fillMaxSize()) { innerPadding ->
+        HomeScreen(
+            movies = movies,
+            modifier = Modifier.padding(innerPadding),
+            onItemClick = onItemClick
+        )
+    }
 }
 
 @Composable
 fun HomeScreen(
+    modifier: Modifier = Modifier,
     movies: LazyPagingItems<Movie>,
-    modifier: Modifier = Modifier
+    onItemClick: (Int) -> Unit
 ) {
-    when (val refresh = movies.loadState.refresh) {
+    when (movies.loadState.refresh) {
         is LoadState.Error -> {
             ErrorScreen(
                 modifier = modifier.fillMaxSize(),
@@ -67,7 +73,10 @@ fun HomeScreen(
                         fontWeight = FontWeight.Medium
                     )
                     Spacer(Modifier.height(12.dp))
-                    HomeContent(movies = movies)
+                    HomeContent(
+                        movies = movies,
+                        onItemClick = onItemClick
+                    )
                 }
             }
         }

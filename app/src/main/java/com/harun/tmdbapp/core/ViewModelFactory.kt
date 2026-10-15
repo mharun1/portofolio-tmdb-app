@@ -1,9 +1,11 @@
 package com.harun.tmdbapp.core
 
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.harun.tmdbapp.ui.screen.detail.DetailViewModel
 import com.harun.tmdbapp.ui.screen.home.HomeViewModel
 
 /**
@@ -17,10 +19,21 @@ fun CreationExtras.tmdbApplication(): TmdbApplication =
  * Using a common factory avoids repeating the boilerplate to retrieve the AppContainer in every ViewModel.
  */
 object ViewModelFactory {
-     val Factory = viewModelFactory {
+    val Factory = viewModelFactory {
         initializer {
             val appContainer = tmdbApplication().container
             HomeViewModel(appContainer.getPopularMoviesUseCase)
         }
     }
+
+    fun detailViewModelFactory(movieId: Int): ViewModelProvider.Factory =
+        viewModelFactory {
+            initializer {
+                val appContainer = tmdbApplication().container
+                DetailViewModel(
+                    movieId = movieId,
+                    getMovieDetailUseCase = appContainer.getMovieDetailUseCase
+                )
+            }
+        }
 }

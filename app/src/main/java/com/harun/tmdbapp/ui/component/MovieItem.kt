@@ -1,6 +1,7 @@
 package com.harun.tmdbapp.ui.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -38,8 +39,13 @@ fun MovieItem(
     title: String,
     rating: Double,
     genres: List<String> = emptyList(),
+    onItemClick: () -> Unit
 ) {
-    Row(modifier = modifier.fillMaxWidth()) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onItemClick() }
+    ) {
         SubcomposeAsyncImage(
             model = poster,
             contentDescription = null,
@@ -117,7 +123,8 @@ private fun Preview() {
             poster = null,
             title = "Movie Title",
             rating = 8.9,
-            genres = listOf("Action", "Drama")
+            genres = listOf("Action", "Drama"),
+            onItemClick = {}
         )
     }
 }

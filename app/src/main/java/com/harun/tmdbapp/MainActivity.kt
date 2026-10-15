@@ -4,14 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.harun.tmdbapp.ui.screen.home.HomeRoute
+import com.harun.tmdbapp.navigation.Navigation
 import com.harun.tmdbapp.ui.theme.PortofolioTMDBAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -20,26 +13,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PortofolioTMDBAppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    HomeRoute(Modifier.padding(innerPadding))
-                }
+                Navigation()
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    PortofolioTMDBAppTheme {
-        Greeting("Android")
     }
 }
