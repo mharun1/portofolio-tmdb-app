@@ -7,7 +7,7 @@ import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import com.harun.tmdbapp.ui.screen.detail.DetailRoute
+import com.harun.tmdbapp.ui.screen.detail.ui.DetailRoute
 import com.harun.tmdbapp.ui.screen.home.HomeRoute
 
 @Composable

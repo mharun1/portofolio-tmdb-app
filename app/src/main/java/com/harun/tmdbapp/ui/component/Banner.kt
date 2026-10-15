@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
@@ -26,11 +27,12 @@ import coil.compose.SubcomposeAsyncImage
 @Composable
 fun Banner(
     modifier: Modifier = Modifier,
-    backdrop: String?,
+    backdropUrl: String?,
+    onBack: () -> Unit
 ) {
     Box(modifier = modifier) {
         SubcomposeAsyncImage(
-            model = backdrop,
+            model = backdropUrl,
             contentDescription = "Image backdrop",
             contentScale = ContentScale.Crop,
             loading = { LoadingScreen() },
@@ -58,9 +60,8 @@ fun Banner(
             modifier = Modifier
                 .fillMaxWidth()
                 .statusBarsPadding()
-                .padding(horizontal = 12.dp, vertical = 8.dp)
         ) {
-            IconButton(onClick = {}) {
+            IconButton(onClick = onBack) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Default.ArrowBack,
                     contentDescription = "Back button",
