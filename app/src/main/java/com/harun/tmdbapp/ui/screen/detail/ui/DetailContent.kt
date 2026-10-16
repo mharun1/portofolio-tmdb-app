@@ -115,19 +115,19 @@ fun DetailContent(
                 )
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    text = movie.summary,
+                    text = movie.summary.ifBlank { "No summary available." },
                     style = MaterialTheme.typography.bodyMedium,
                     lineHeight = 22.sp,
                     color = Color.Gray
                 )
-                Spacer(Modifier.height(16.dp))
-                Text(
-                    text = "Cast",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Medium
-                )
-                Spacer(Modifier.height(8.dp))
                 if (movie.cast.isNotEmpty()) {
+                    Spacer(Modifier.height(16.dp))
+                    Text(
+                        text = "Cast",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Spacer(Modifier.height(8.dp))
                     LazyRow(
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                         modifier = Modifier.fillMaxWidth()
