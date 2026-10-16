@@ -37,6 +37,7 @@ import com.harun.tmdbapp.ui.component.CastItem
 import com.harun.tmdbapp.ui.component.GenreRow
 import com.harun.tmdbapp.ui.component.MovieInfoItem
 import com.harun.tmdbapp.ui.theme.PortofolioTMDBAppTheme
+import com.harun.tmdbapp.ui.theme.StarYellow
 import com.harun.tmdbapp.ui.utils.toDisplayDate
 import com.harun.tmdbapp.ui.utils.toDisplayRuntime
 import java.util.Locale
@@ -70,26 +71,20 @@ fun DetailContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp)
-                    .padding(top = 16.dp, bottom = 48.dp)
+                    .padding(top = 24.dp, bottom = 48.dp)
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = movie.title,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.weight(1f)
-                    )
-                }
+                Text(
+                    text = movie.title,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
                 Spacer(Modifier.height(8.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         imageVector = Icons.Default.Star,
                         contentDescription = "Rating",
-                        tint = Color(0xFFFFC107)
+                        tint = StarYellow
                     )
                     Spacer(Modifier.width(8.dp))
                     Text(

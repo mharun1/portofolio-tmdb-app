@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.harun.tmdbapp.ui.theme.PortofolioTMDBAppTheme
+import com.harun.tmdbapp.ui.theme.StarYellow
 import java.util.Locale
 
 @Composable
@@ -66,7 +67,7 @@ fun MovieItem(
                 Icon(
                     imageVector = Icons.Rounded.Star,
                     contentDescription = "Star icon",
-                    tint = Color(0xFFFFC107)
+                    tint = StarYellow
                 )
                 Spacer(Modifier.width(3.dp))
                 Text(

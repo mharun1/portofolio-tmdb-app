@@ -37,7 +37,8 @@ class DetailMapperTest {
                         id = 10,
                         name = "Leonardo DiCaprio",
                         character = "Cobb",
-                        picture = "/leo.jpg"
+                        picture = "/leo.jpg",
+                        creditId = "credit_10"
                     )
                 )
             )
@@ -61,6 +62,7 @@ class DetailMapperTest {
         assertEquals("Leonardo DiCaprio", castMember.name)
         assertEquals("Cobb", castMember.character)
         assertEquals("https://image.tmdb.org/t/p/w185/leo.jpg", castMember.picture)
+        assertEquals("credit_10", castMember.creditId)
     }
 
     @Test
@@ -81,7 +83,8 @@ class DetailMapperTest {
                         id = 2,
                         name = "Actor",
                         character = "Role",
-                        picture = null
+                        picture = null,
+                        creditId = "credit_2"
                     )
                 )
             )
@@ -144,7 +147,8 @@ class DetailMapperTest {
                 id = index,
                 name = "Actor $index",
                 character = "Character $index",
-                picture = null
+                picture = null,
+                creditId = "credit_$index"
             )
         }
 
@@ -168,6 +172,51 @@ class DetailMapperTest {
             assertEquals(index, castMember.id)
             assertEquals("Actor $index", castMember.name)
             assertEquals("Character $index", castMember.character)
+            assertEquals("credit_$index", castMember.creditId)
         }
+    }
+
+    @Test
+    fun `maps multiple cast entries with the same person id but different creditIds`() {
+        val response = DetailMovieResponse(
+            id = 1,
+            backdropUrl = null,
+            title = "Dual Role Movie",
+            overview = "Overview",
+            genres = emptyList(),
+            runtime = 120,
+            rating = 8.0,
+            releaseDate = "2024-01-01",
+            languages = emptyList(),
+            credits = CreditsListResponse(
+                cast = listOf(
+                    CastDto(
+                        id = 42,
+                        name = "Eddie Murphy",
+                        character = "Prince Akeem",
+                        picture = "/eddie.jpg",
+                        creditId = "credit_akeem"
+                    ),
+                    CastDto(
+                        id = 42,
+                        name = "Eddie Murphy",
+                        character = "Randy Watson",
+                        picture = "/eddie.jpg",
+                        creditId = "credit_randy"
+                    )
+                )
+            )
+        )
+
+        val domain = response.toDomain()
+
+        assertEquals(2, domain.cast.size)
+        assertEquals(42, domain.cast[0].id)
+        assertEquals("Prince Akeem", domain.cast[0].character)
+        assertEquals("credit_akeem", domain.cast[0].creditId)
+
+        assertEquals(42, domain.cast[1].id)
+        assertEquals("Randy Watson", domain.cast[1].character)
+        assertEquals("credit_randy", domain.cast[1].creditId)
     }
 }

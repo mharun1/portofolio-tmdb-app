@@ -8,10 +8,12 @@ val DarkNavyLight = Color(0xFF1D1768)
 
 // Secondary / Chip Colors (Pastel periwinkle/blue from Genre pills)
 val GenreChipBackground = Color(0xFFDBE3FF)
-val GenreChipText = Color(0xFF88A4E8)
+// Darker steel blue to satisfy WCAG AA contrast ratio (5.1:1 on #DBE3FF)
+val GenreChipText = Color(0xFF3D5AA8)
 
 // Neutral Grays / Text variants
-val TextSecondaryGray = Color(0xFF9C9C9C)
+// Darker gray to satisfy WCAG AA contrast ratio (6.2:1 on #FFFFFF)
+val TextSecondaryGray = Color(0xFF616161)
 val LightSurfaceBackground = Color(0xFFFFFFFF)
 val LightSurfaceVariant = Color(0xFFF6F7F9)
 
