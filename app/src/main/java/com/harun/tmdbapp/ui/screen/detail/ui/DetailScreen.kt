@@ -27,14 +27,11 @@ fun DetailRoute(
     ),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    Surface(
-        modifier = modifier.fillMaxSize()
-    ) {
+    Surface(modifier = modifier.fillMaxSize()) {
         DetailScreen(
             uiState = uiState,
             onRetry = viewModel::retry,
             onBack = onBack,
-            modifier = Modifier.verticalScroll(rememberScrollState())
         )
     }
 }

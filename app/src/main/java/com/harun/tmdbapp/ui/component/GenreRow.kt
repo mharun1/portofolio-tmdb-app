@@ -10,7 +10,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
@@ -27,8 +26,8 @@ fun GenreRow(
         genres.forEach { genre ->
             Surface(
                 shape = RoundedCornerShape(100),
-                color = Color(0xffdce3ff),
-                contentColor = Color(0xff87a4e8),
+                color = MaterialTheme.colorScheme.secondaryContainer,
+                contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
             ) {
                 Text(
                     text = genre,

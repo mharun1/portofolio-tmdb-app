@@ -50,5 +50,6 @@ fun CastDto.toDomain(): CastMember = CastMember(
     id = id,
     name = name,
     picture = picture.toUrl(PROFILE_SIZE),
-    character = character
+    character = character,
+    creditId = creditId
 )

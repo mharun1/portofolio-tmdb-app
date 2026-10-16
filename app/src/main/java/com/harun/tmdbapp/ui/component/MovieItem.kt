@@ -58,7 +58,8 @@ fun MovieItem(
             Text(
                 text = title,
                 style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(Modifier.height(4.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -71,7 +72,7 @@ fun MovieItem(
                 Text(
                     text = String.format(Locale.US, "%.1f/10 TMDb", rating),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
             if (genres.isNotEmpty()) {
@@ -80,8 +81,8 @@ fun MovieItem(
                     genres.take(3).forEach { genre ->
                         Surface(
                             shape = RoundedCornerShape(100),
-                            color = Color(0xffdce3ff),
-                            contentColor = Color(0xff87a4e8),
+                            color = MaterialTheme.colorScheme.secondaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
                         ) {
                             Text(
                                 text = genre,

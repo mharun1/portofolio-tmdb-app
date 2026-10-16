@@ -15,4 +15,6 @@ data class CastDto(
     val character: String,
     @SerialName("profile_path")
     val picture: String? = null,
+    @SerialName("credit_id")
+    val creditId: String
 )

@@ -2,10 +2,28 @@ package com.harun.tmdbapp.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+// Brand / Primary Colors (Deep Blue/Navy from FilmKu headers and text)
+val DarkNavyPrimary = Color(0xFF110E47)
+val DarkNavyLight = Color(0xFF1D1768)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+// Secondary / Chip Colors (Pastel periwinkle/blue from Genre pills)
+val GenreChipBackground = Color(0xFFDBE3FF)
+val GenreChipText = Color(0xFF88A4E8)
+
+// Neutral Grays / Text variants
+val TextSecondaryGray = Color(0xFF9C9C9C)
+val LightSurfaceBackground = Color(0xFFFFFFFF)
+val LightSurfaceVariant = Color(0xFFF6F7F9)
+
+// Accent / Star Rating
+val StarYellow = Color(0xFFFFC107)
+
+// Dark Theme Palette equivalents
+val DarkThemeBackground = Color(0xFF0C0B18)
+val DarkThemeSurface = Color(0xFF151426)
+val DarkThemeSurfaceVariant = Color(0xFF222038)
+val DarkThemeOnSurface = Color(0xFFE8E8EC)
+val DarkThemeOnSurfaceVariant = Color(0xFFA0A0AB)
+val DarkThemePrimary = Color(0xFFB4C5FF)
+val DarkGenreChipBackground = Color(0xFF232B4E)
+val DarkGenreChipText = Color(0xFFA5BBF8)

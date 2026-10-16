@@ -5,4 +5,5 @@ data class CastMember(
     val name: String,
     val picture: String?,
     val character: String,
+    val creditId: String
 )
