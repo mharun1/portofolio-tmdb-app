@@ -5,6 +5,7 @@ import androidx.paging.PagingState
 import com.harun.tmdbapp.data.mapper.toDomain
 import com.harun.tmdbapp.data.remote.retrofit.network.ApiService
 import com.harun.tmdbapp.model.Movie
+import com.harun.tmdbapp.model.MovieCategory
 import kotlinx.serialization.SerializationException
 import retrofit2.HttpException
 import java.io.IOException
@@ -13,14 +14,18 @@ private const val MAX_TMDB_PAGES = 500
 
 class MoviePagingSource(
     private val apiService: ApiService,
-    private val getGenres: suspend () -> Map<Int, String> = { emptyMap() }
+    private val category: MovieCategory = MovieCategory.POPULAR,
+    private val getGenres: suspend () -> Map<Int, String> = { emptyMap() },
 ): PagingSource<Int, Movie>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
         val page = params.key ?: 1
 
         return try {
             val genreMap = getGenres()
-            val response = apiService.getPopularMovies(page).toDomain(genreMap)
+            val response = when (category) {
+                MovieCategory.POPULAR -> apiService.getPopularMovies(page)
+                MovieCategory.TOP_RATED -> apiService.getTopRatedMovie(page)
+            }.toDomain(genreMap)
             val lastPage = minOf(response.totalPages, MAX_TMDB_PAGES)
 
             LoadResult.Page(
@@ -43,5 +48,4 @@ class MoviePagingSource(
             anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
         }
     }
-
 }

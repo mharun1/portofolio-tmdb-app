@@ -4,14 +4,14 @@ import com.harun.tmdbapp.data.remote.retrofit.network.Network
 import com.harun.tmdbapp.data.repository.MovieRepository
 import com.harun.tmdbapp.repository.Repository
 import com.harun.tmdbapp.usecase.GetMovieDetailUseCase
-import com.harun.tmdbapp.usecase.GetPopularMoviesUseCase
+import com.harun.tmdbapp.usecase.GetMoviesUseCase
 
 /**
  * Dependency Injection container at the application level.
  */
 interface AppContainer {
     val movieRepository: Repository
-    val getPopularMoviesUseCase: GetPopularMoviesUseCase
+    val getMoviesUseCase: GetMoviesUseCase
     val getMovieDetailUseCase: GetMovieDetailUseCase
 }
 
@@ -24,8 +24,8 @@ class DefaultAppContainer : AppContainer {
     override val movieRepository: Repository by lazy {
         MovieRepository(Network.api)
     }
-    override val getPopularMoviesUseCase: GetPopularMoviesUseCase by lazy {
-        GetPopularMoviesUseCase(movieRepository)
+    override val getMoviesUseCase: GetMoviesUseCase by lazy {
+        GetMoviesUseCase(movieRepository)
     }
     override val getMovieDetailUseCase: GetMovieDetailUseCase by lazy {
         GetMovieDetailUseCase(movieRepository)
