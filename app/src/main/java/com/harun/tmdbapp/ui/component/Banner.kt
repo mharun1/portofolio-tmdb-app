@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -32,7 +31,7 @@ fun Banner(
     Box(modifier = modifier) {
         SubcomposeAsyncImage(
             model = backdropUrl,
-            contentDescription = "Image backdrop",
+            contentDescription = null,
             contentScale = ContentScale.Crop,
             loading = { LoadingScreen() },
             error = { ImagePlaceholder() },

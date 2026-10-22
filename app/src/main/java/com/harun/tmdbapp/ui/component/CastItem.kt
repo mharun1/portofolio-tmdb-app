@@ -27,7 +27,7 @@ fun CastItem(
     Column(modifier = modifier.width(100.dp)) {
         SubcomposeAsyncImage(
             model = pictureUrl,
-            contentDescription = "Cast photo",
+            contentDescription = null,
             contentScale = ContentScale.Crop,
             loading = { LoadingScreen() },
             error = { ImagePlaceholder() },
