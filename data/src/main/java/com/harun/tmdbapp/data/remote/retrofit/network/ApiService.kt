@@ -30,4 +30,7 @@ interface ApiService {
     suspend fun getTopRatedMovie(
         @Query("page") page: Int
     ): MovieListResponse
+
+    @GET("movie/now_playing")
+    suspend fun getNowPlayingMovie(): MovieListResponse
 }

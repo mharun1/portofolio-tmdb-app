@@ -1,4 +1,4 @@
-package com.harun.tmdbapp.ui.screen.home
+package com.harun.tmdbapp.ui.screen.home.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,6 +37,7 @@ import com.harun.tmdbapp.model.Movie
 import com.harun.tmdbapp.model.MovieCategory
 import com.harun.tmdbapp.ui.component.ErrorScreen
 import com.harun.tmdbapp.ui.component.LoadingScreen
+import com.harun.tmdbapp.ui.screen.home.HomeViewModel
 
 @Composable
 fun HomeRoute(

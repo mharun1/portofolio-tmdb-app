@@ -1,4 +1,4 @@
-package com.harun.tmdbapp.ui.screen.home
+package com.harun.tmdbapp.ui.screen.home.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
