@@ -25,7 +25,7 @@ class DetailViewModelTest {
         var resultToReturn: Result<MovieDetail>? = null
         var requestedId: Int? = null
 
-        override fun getPopularMovies(): Flow<PagingData<Movie>> = throw NotImplementedError()
+        override fun getMovies(category: com.harun.tmdbapp.model.MovieCategory): Flow<PagingData<Movie>> = throw NotImplementedError()
 
         override suspend fun getDetailMovie(id: Int): Result<MovieDetail> {
             requestedId = id
@@ -36,7 +36,7 @@ class DetailViewModelTest {
     private class SuspendingFakeRepository : Repository {
         val deferredList = mutableListOf<CompletableDeferred<Result<MovieDetail>>>()
 
-        override fun getPopularMovies(): Flow<PagingData<Movie>> = throw NotImplementedError()
+        override fun getMovies(category: com.harun.tmdbapp.model.MovieCategory): Flow<PagingData<Movie>> = throw NotImplementedError()
 
         override suspend fun getDetailMovie(id: Int): Result<MovieDetail> {
             val deferred = CompletableDeferred<Result<MovieDetail>>()

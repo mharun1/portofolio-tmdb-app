@@ -51,6 +51,7 @@ class MovieRepositoryTest {
         }
 
         override suspend fun getPopularMovies(page: Int): MovieListResponse = throw NotImplementedError()
+        override suspend fun getTopRatedMovie(page: Int): MovieListResponse = throw NotImplementedError()
         override suspend fun getGenres(): GenreListResponse = throw NotImplementedError()
         override suspend fun getImageConfiguration(): ConfigurationResponse = throw NotImplementedError()
     }
@@ -104,11 +105,24 @@ class MovieRepositoryTest {
                 throw CancellationException("Cancelled")
             }
             override suspend fun getPopularMovies(page: Int): MovieListResponse = throw NotImplementedError()
+            override suspend fun getTopRatedMovie(page: Int): MovieListResponse = throw NotImplementedError()
             override suspend fun getGenres(): GenreListResponse = throw NotImplementedError()
             override suspend fun getImageConfiguration(): ConfigurationResponse = throw NotImplementedError()
         }
         val repository = MovieRepository(fakeApi)
 
         repository.getDetailMovie(101)
+    }
+
+    @Test
+    fun `getMovies returns flow of paging data for given category`() = runTest {
+        val fakeApi = FakeApiService()
+        val repository = MovieRepository(fakeApi)
+
+        val popularFlow = repository.getMovies(com.harun.tmdbapp.model.MovieCategory.POPULAR)
+        val topRatedFlow = repository.getMovies(com.harun.tmdbapp.model.MovieCategory.TOP_RATED)
+
+        org.junit.Assert.assertNotNull(popularFlow)
+        org.junit.Assert.assertNotNull(topRatedFlow)
     }
 }

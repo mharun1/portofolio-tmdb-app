@@ -17,7 +17,7 @@ class GetMovieDetailUseCaseTest {
         var requestedId: Int? = null
         var resultToReturn: Result<MovieDetail>? = null
 
-        override fun getPopularMovies(): Flow<PagingData<Movie>> {
+        override fun getMovies(category: com.harun.tmdbapp.model.MovieCategory): Flow<PagingData<Movie>> {
             throw NotImplementedError()
         }
 
