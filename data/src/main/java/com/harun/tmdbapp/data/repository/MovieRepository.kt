@@ -7,6 +7,7 @@ import com.harun.tmdbapp.data.mapper.toDomain
 import com.harun.tmdbapp.data.paging.MoviePagingSource
 import com.harun.tmdbapp.data.remote.retrofit.network.ApiService
 import com.harun.tmdbapp.model.Movie
+import com.harun.tmdbapp.model.MovieCategory
 import com.harun.tmdbapp.model.MovieDetail
 import com.harun.tmdbapp.repository.Repository
 import kotlinx.coroutines.CancellationException
@@ -30,10 +31,16 @@ class MovieRepository(
         }
     }
 
-    override fun getPopularMovies(): Flow<PagingData<Movie>> {
+    override fun getMovies(category: MovieCategory): Flow<PagingData<Movie>> {
         return Pager(
             config = PagingConfig(pageSize = 20, enablePlaceholders = false),
-            pagingSourceFactory = { MoviePagingSource(apiService, ::getGenreMap) }
+            pagingSourceFactory = {
+                MoviePagingSource(
+                    apiService = apiService,
+                    category = category,
+                    getGenres = ::getGenreMap
+                )
+            }
         ).flow
     }
 
