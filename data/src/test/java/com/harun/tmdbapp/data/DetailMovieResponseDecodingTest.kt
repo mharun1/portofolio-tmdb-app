@@ -35,6 +35,7 @@ class DetailMovieResponseDecodingTest {
                 "name": "Edward Norton",
                 "character": "The Narrator",
                 "profile_path": "/5XBzD5WuTyVQZeS4VI25z2moMeY.jpg",
+                "credit_id": "52fe4250c3a36847f80149f3",
                 "order": 0
               },
               {
@@ -42,6 +43,7 @@ class DetailMovieResponseDecodingTest {
                 "name": "Brad Pitt",
                 "character": "Tyler Durden",
                 "profile_path": null,
+                "credit_id": "52fe4250c3a36847f80149f7",
                 "order": 1
               }
             ],
@@ -75,7 +77,7 @@ class DetailMovieResponseDecodingTest {
         assertEquals(1, result.languages.size)
         assertEquals("English", result.languages[0].englishName)
 
-        // Verifies credits and cast @SerialName("profile_path"), proving "crew" is safely ignored
+        // Verifies credits and cast @SerialName("profile_path"), @SerialName("credit_id"), proving "crew" is safely ignored
         val credits = result.credits
         requireNotNull(credits)
         assertEquals(2, credits.cast.size)
@@ -83,8 +85,13 @@ class DetailMovieResponseDecodingTest {
         assertEquals("Edward Norton", credits.cast[0].name)
         assertEquals("The Narrator", credits.cast[0].character)
         assertEquals("/5XBzD5WuTyVQZeS4VI25z2moMeY.jpg", credits.cast[0].picture)
+        assertEquals("52fe4250c3a36847f80149f3", credits.cast[0].creditId)
 
-        // Verifies null profile_path decoding
+        // Verifies null profile_path decoding and credit_id
         assertNull(credits.cast[1].picture)
+        assertEquals(287, credits.cast[1].id)
+        assertEquals("Brad Pitt", credits.cast[1].name)
+        assertEquals("Tyler Durden", credits.cast[1].character)
+        assertEquals("52fe4250c3a36847f80149f7", credits.cast[1].creditId)
     }
 }

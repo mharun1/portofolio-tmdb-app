@@ -22,7 +22,13 @@ class MovieRepositoryTest {
         var shouldThrowException = false
         var creditsResponse: CreditsListResponse? = CreditsListResponse(
             cast = listOf(
-                CastDto(id = 1, name = "Leonardo DiCaprio", character = "Cobb", picture = "/leo.jpg")
+                CastDto(
+                    id = 1,
+                    name = "Leonardo DiCaprio",
+                    character = "Cobb",
+                    picture = "/leo.jpg",
+                    creditId = "credit_leo_1"
+                )
             )
         )
 
@@ -63,6 +69,7 @@ class MovieRepositoryTest {
         assertEquals("https://image.tmdb.org/t/p/w780/backdrop.jpg", movie.backdropUrl)
         assertEquals(1, movie.cast.size)
         assertEquals("Leonardo DiCaprio", movie.cast.first().name)
+        assertEquals("credit_leo_1", movie.cast.first().creditId)
     }
 
     @Test
