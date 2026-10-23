@@ -2,13 +2,14 @@ package com.harun.tmdbapp.ui.screen.home.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,7 +38,9 @@ import com.harun.tmdbapp.model.Movie
 import com.harun.tmdbapp.model.MovieCategory
 import com.harun.tmdbapp.ui.component.ErrorScreen
 import com.harun.tmdbapp.ui.component.LoadingScreen
+import com.harun.tmdbapp.ui.component.MovieItem
 import com.harun.tmdbapp.ui.screen.home.HomeViewModel
+import com.harun.tmdbapp.ui.screen.home.NowPlayingUiState
 
 @Composable
 fun HomeRoute(
@@ -46,15 +49,18 @@ fun HomeRoute(
     onItemClick: (Int) -> Unit,
 ) {
     val movies = viewModel.movies.collectAsLazyPagingItems()
+    val nowPlayingUiState by viewModel.nowPlayingUiState.collectAsStateWithLifecycle()
     val selectedCategory by viewModel.selectedCategory.collectAsStateWithLifecycle()
 
     Scaffold(modifier = modifier.fillMaxSize()) { innerPadding ->
         HomeScreen(
+            nowPlayingUiState = nowPlayingUiState,
+            onRetryNowPlaying = viewModel::retry,
             movies = movies,
             selectedCategory = selectedCategory,
             onCategorySelected = viewModel::onCategorySelected,
             modifier = Modifier.padding(innerPadding),
-            onItemClick = onItemClick
+            onItemClick = onItemClick,
         )
     }
 }
@@ -62,11 +68,13 @@ fun HomeRoute(
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
+    nowPlayingUiState: NowPlayingUiState,
+    onRetryNowPlaying: () -> Unit = {},
     movies: LazyPagingItems<Movie>,
     selectedCategory: MovieCategory = MovieCategory.POPULAR,
     onCategorySelected: (MovieCategory) -> Unit = {},
     listState: LazyListState = rememberLazyListState(),
-    onItemClick: (Int) -> Unit
+    onItemClick: (Int) -> Unit,
 ) {
     var previousCategory by rememberSaveable { mutableStateOf(selectedCategory) }
 
@@ -77,101 +85,165 @@ fun HomeScreen(
         }
     }
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(start = 24.dp, end = 24.dp, top = 24.dp)
+    LazyColumn(
+        state = listState,
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(bottom = 24.dp),
     ) {
-        Row(
-            modifier = Modifier.padding(bottom = 12.dp),
-            horizontalArrangement = Arrangement.spacedBy(2.dp)
-        ) {
-            val isPopularSelected = selectedCategory == MovieCategory.POPULAR
-            Button(
-                onClick = { onCategorySelected(MovieCategory.POPULAR) },
-                shape = RoundedCornerShape(
-                    topStart = 20.dp,
-                    bottomStart = 20.dp,
-                    topEnd = 4.dp,
-                    bottomEnd = 4.dp
-                ),
-                colors = if (isPopularSelected) {
-                    ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary
-                    )
-                } else {
-                    ButtonDefaults.filledTonalButtonColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                },
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                modifier = Modifier.height(40.dp)
-            ) {
-                Text(
-                    text = "Popular",
-                    style = MaterialTheme.typography.labelLarge
-                )
-            }
-
-            val isTopRatedSelected = selectedCategory == MovieCategory.TOP_RATED
-            Button(
-                onClick = { onCategorySelected(MovieCategory.TOP_RATED) },
-                shape = RoundedCornerShape(
-                    topStart = 4.dp,
-                    bottomStart = 4.dp,
-                    topEnd = 20.dp,
-                    bottomEnd = 20.dp
-                ),
-                colors = if (isTopRatedSelected) {
-                    ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary
-                    )
-                } else {
-                    ButtonDefaults.filledTonalButtonColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                },
-                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                modifier = Modifier.height(40.dp)
-            ) {
-                Text(
-                    text = "Top Rated",
-                    style = MaterialTheme.typography.labelLarge
-                )
-            }
+        // 1. Now Playing Carousel
+        item(key = "now_playing_section") {
+            NowPlayingSection(
+                uiState = nowPlayingUiState,
+                onRetry = onRetryNowPlaying,
+                onItemClick = onItemClick,
+                modifier = Modifier.padding(top = 24.dp),
+            )
+            Spacer(Modifier.height(16.dp))
         }
 
-        Spacer(Modifier.height(4.dp))
+        // 2. Popular / Top Rated Switch
+        item(key = "category_switch") {
+            Row(
+                modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(2.dp),
+            ) {
+                val isPopularSelected = selectedCategory == MovieCategory.POPULAR
+                Button(
+                    onClick = { onCategorySelected(MovieCategory.POPULAR) },
+                    shape = RoundedCornerShape(
+                        topStart = 20.dp,
+                        bottomStart = 20.dp,
+                        topEnd = 4.dp,
+                        bottomEnd = 4.dp,
+                    ),
+                    colors = if (isPopularSelected) {
+                        ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
+                        )
+                    } else {
+                        ButtonDefaults.filledTonalButtonColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    },
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                    modifier = Modifier.height(40.dp),
+                ) {
+                    Text(
+                        text = "Popular",
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                }
 
-        when (movies.loadState.refresh) {
-            is LoadState.Error -> {
-                ErrorScreen(
-                    modifier = Modifier.fillMaxSize(),
-                    errorMessage = "Couldn't load movies. Check your connection.",
-                    onClick = { movies.retry() }
-                )
+                val isTopRatedSelected = selectedCategory == MovieCategory.TOP_RATED
+                Button(
+                    onClick = { onCategorySelected(MovieCategory.TOP_RATED) },
+                    shape = RoundedCornerShape(
+                        topStart = 4.dp,
+                        bottomStart = 4.dp,
+                        topEnd = 20.dp,
+                        bottomEnd = 20.dp,
+                    ),
+                    colors = if (isTopRatedSelected) {
+                        ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary,
+                        )
+                    } else {
+                        ButtonDefaults.filledTonalButtonColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                            contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    },
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                    modifier = Modifier.height(40.dp),
+                ) {
+                    Text(
+                        text = "Top Rated",
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                }
             }
+            Spacer(Modifier.height(4.dp))
+        }
+
+        // 3. Paged list and its refresh states (inside the list below the switch)
+        when (movies.loadState.refresh) {
             is LoadState.Loading -> {
-                LoadingScreen(modifier = Modifier.fillMaxSize())
+                item(key = "movies_loading") {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        LoadingScreen()
+                    }
+                }
+            }
+            is LoadState.Error -> {
+                item(key = "movies_error") {
+                    ErrorScreen(
+                        modifier = Modifier.fillMaxWidth(),
+                        errorMessage = "Couldn't load movies. Check your connection.",
+                        onClick = { movies.retry() },
+                    )
+                }
             }
             is LoadState.NotLoading -> {
                 if (movies.itemCount == 0) {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(text = "No movies found", textAlign = TextAlign.Center)
+                    item(key = "movies_empty") {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 32.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                text = "No movies found",
+                                textAlign = TextAlign.Center,
+                            )
+                        }
                     }
                 } else {
-                    HomeContent(
-                        movies = movies,
-                        listState = listState,
-                        onItemClick = onItemClick
-                    )
+                    items(
+                        count = movies.itemCount,
+                        key = { index -> "${movies[index]?.id ?: "movie"}_$index" },
+                    ) { index ->
+                        val movie = movies[index]
+                        if (movie != null) {
+                            MovieItem(
+                                poster = movie.posterUrl,
+                                title = movie.title,
+                                rating = movie.rating,
+                                genres = movie.genres,
+                                onItemClick = { onItemClick(movie.id) },
+                                modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 12.dp),
+                            )
+                        }
+                    }
+
+                    if (movies.loadState.append is LoadState.Loading) {
+                        item(key = "movies_append_loading") {
+                            LoadingScreen(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                            )
+                        }
+                    }
+
+                    val appendError = movies.loadState.append as? LoadState.Error
+                    if (appendError != null) {
+                        item(key = "movies_append_error") {
+                            ErrorScreen(
+                                modifier = Modifier.fillMaxWidth(),
+                                errorMessage = "Couldn't load more movies. Check your connection.",
+                                onClick = { movies.retry() },
+                            )
+                        }
+                    }
                 }
             }
         }
