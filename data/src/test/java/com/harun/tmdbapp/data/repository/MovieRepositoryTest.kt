@@ -7,6 +7,7 @@ import com.harun.tmdbapp.data.remote.response.DetailMovieResponse
 import com.harun.tmdbapp.data.remote.response.GenreDto
 import com.harun.tmdbapp.data.remote.response.GenreListResponse
 import com.harun.tmdbapp.data.remote.response.LanguageRef
+import com.harun.tmdbapp.data.remote.response.MovieDto
 import com.harun.tmdbapp.data.remote.response.MovieListResponse
 import com.harun.tmdbapp.data.remote.retrofit.network.ApiService
 import kotlinx.coroutines.CancellationException
@@ -20,6 +21,12 @@ class MovieRepositoryTest {
 
     private class FakeApiService : ApiService {
         var shouldThrowException = false
+        var exceptionToThrow: Throwable = IOException("Network error: request failed")
+        var nowPlayingResponse: MovieListResponse = MovieListResponse(
+            page = 1,
+            results = emptyList(),
+            totalPages = 1
+        )
         var creditsResponse: CreditsListResponse? = CreditsListResponse(
             cast = listOf(
                 CastDto(
@@ -34,7 +41,7 @@ class MovieRepositoryTest {
 
         override suspend fun getDetailMovie(id: Int, appendToResponse: String): DetailMovieResponse {
             if (shouldThrowException) {
-                throw IOException("Network error: details failed")
+                throw exceptionToThrow
             }
             return DetailMovieResponse(
                 id = id,
@@ -48,6 +55,13 @@ class MovieRepositoryTest {
                 languages = listOf(LanguageRef(englishName = "English")),
                 credits = creditsResponse
             )
+        }
+
+        override suspend fun getNowPlayingMovie(): MovieListResponse {
+            if (shouldThrowException) {
+                throw exceptionToThrow
+            }
+            return nowPlayingResponse
         }
 
         override suspend fun getPopularMovies(page: Int): MovieListResponse = throw NotImplementedError()
@@ -104,6 +118,7 @@ class MovieRepositoryTest {
             override suspend fun getDetailMovie(id: Int, appendToResponse: String): DetailMovieResponse {
                 throw CancellationException("Cancelled")
             }
+            override suspend fun getNowPlayingMovie(): MovieListResponse = throw NotImplementedError()
             override suspend fun getPopularMovies(page: Int): MovieListResponse = throw NotImplementedError()
             override suspend fun getTopRatedMovie(page: Int): MovieListResponse = throw NotImplementedError()
             override suspend fun getGenres(): GenreListResponse = throw NotImplementedError()
@@ -124,5 +139,59 @@ class MovieRepositoryTest {
 
         org.junit.Assert.assertNotNull(popularFlow)
         org.junit.Assert.assertNotNull(topRatedFlow)
+    }
+
+    @Test
+    fun `getNowPlayingMovie returns mapped movies capped at 10 items`() = runTest {
+        val fakeApi = FakeApiService().apply {
+            nowPlayingResponse = MovieListResponse(
+                page = 1,
+                results = (1..20).map { index ->
+                    MovieDto(
+                        id = index,
+                        title = "Movie $index",
+                        poster = "/poster$index.jpg",
+                        genreIds = emptyList(),
+                        rating = 7.5
+                    )
+                },
+                totalPages = 1
+            )
+        }
+        val repository = MovieRepository(fakeApi)
+
+        val result = repository.getNowPlayingMovie()
+
+        assertTrue(result.isSuccess)
+        val movies = result.getOrThrow()
+        assertEquals(10, movies.size)
+        assertEquals(1, movies.first().id)
+        assertEquals(10, movies.last().id)
+        assertEquals("Movie 1", movies.first().title)
+    }
+
+    @Test
+    fun `getNowPlayingMovie returns failure Result when API call fails`() = runTest {
+        val fakeApi = FakeApiService().apply {
+            shouldThrowException = true
+            exceptionToThrow = IOException("Now playing API failed")
+        }
+        val repository = MovieRepository(fakeApi)
+
+        val result = repository.getNowPlayingMovie()
+
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is IOException)
+    }
+
+    @Test(expected = CancellationException::class)
+    fun `getNowPlayingMovie rethrows CancellationException`() = runTest {
+        val fakeApi = FakeApiService().apply {
+            shouldThrowException = true
+            exceptionToThrow = CancellationException("Coroutines job cancelled")
+        }
+        val repository = MovieRepository(fakeApi)
+
+        repository.getNowPlayingMovie()
     }
 }

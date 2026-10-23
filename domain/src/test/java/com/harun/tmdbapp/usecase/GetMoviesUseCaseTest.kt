@@ -25,6 +25,10 @@ class GetMoviesUseCaseTest {
         override suspend fun getDetailMovie(id: Int): Result<MovieDetail> {
             throw NotImplementedError()
         }
+
+        override suspend fun getNowPlayingMovie(): Result<List<Movie>> {
+            throw NotImplementedError()
+        }
     }
 
     @Test
