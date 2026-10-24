@@ -38,7 +38,7 @@ class MoviePagingSourceTest {
             )
         }
 
-        override suspend fun getTopRatedMovie(page: Int): MovieListResponse {
+        override suspend fun getTopRatedMovies(page: Int): MovieListResponse {
             topRatedCalled = true
             lastPageRequested = page
             if (shouldThrow) throw IOException("Network error")
@@ -79,7 +79,7 @@ class MoviePagingSourceTest {
 
         assertTrue(result is PagingSource.LoadResult.Page)
         assertTrue("getPopularMovies should be called", fakeApi.popularCalled)
-        assertFalse("getTopRatedMovie should not be called", fakeApi.topRatedCalled)
+        assertFalse("getTopRatedMovies should not be called", fakeApi.topRatedCalled)
         assertEquals(1, fakeApi.lastPageRequested)
         val page = result as PagingSource.LoadResult.Page
         assertEquals(1, page.data.size)
@@ -100,7 +100,7 @@ class MoviePagingSourceTest {
         )
 
         assertTrue(result is PagingSource.LoadResult.Page)
-        assertTrue("getTopRatedMovie should be called", fakeApi.topRatedCalled)
+        assertTrue("getTopRatedMovies should be called", fakeApi.topRatedCalled)
         assertFalse("getPopularMovies should not be called", fakeApi.popularCalled)
         assertEquals(1, fakeApi.lastPageRequested)
         val page = result as PagingSource.LoadResult.Page
