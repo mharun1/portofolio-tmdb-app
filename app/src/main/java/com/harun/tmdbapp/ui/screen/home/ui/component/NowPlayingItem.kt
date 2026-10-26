@@ -1,4 +1,4 @@
-package com.harun.tmdbapp.ui.component
+package com.harun.tmdbapp.ui.screen.home.ui.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -23,6 +23,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
+import com.harun.tmdbapp.ui.component.state.ImagePlaceholder
+import com.harun.tmdbapp.ui.component.state.LoadingScreen
 import com.harun.tmdbapp.ui.theme.PortofolioTMDBAppTheme
 import com.harun.tmdbapp.ui.theme.StarYellow
 import java.util.Locale

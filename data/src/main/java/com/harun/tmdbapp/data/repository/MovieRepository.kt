@@ -5,6 +5,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.harun.tmdbapp.data.mapper.toDomain
 import com.harun.tmdbapp.data.paging.MoviePagingSource
+import com.harun.tmdbapp.data.paging.SearchMoviePagingSource
 import com.harun.tmdbapp.data.remote.retrofit.network.ApiService
 import com.harun.tmdbapp.model.Movie
 import com.harun.tmdbapp.model.MovieCategory
@@ -67,5 +68,18 @@ class MovieRepository(
         } catch (e: Exception) {
             Result.failure(e)
         }
+    }
+
+    override fun searchMovies(query: String): Flow<PagingData<Movie>> {
+        return Pager(
+            config = PagingConfig(pageSize = 20, enablePlaceholders = false),
+            pagingSourceFactory = {
+                SearchMoviePagingSource(
+                    apiService = apiService,
+                    query = query,
+                    getGenres = ::getGenreMap
+                )
+            }
+        ).flow
     }
 }

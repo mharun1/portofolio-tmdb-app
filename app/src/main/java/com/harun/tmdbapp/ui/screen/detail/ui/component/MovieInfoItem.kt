@@ -1,4 +1,4 @@
-package com.harun.tmdbapp.ui.component
+package com.harun.tmdbapp.ui.screen.detail.ui.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

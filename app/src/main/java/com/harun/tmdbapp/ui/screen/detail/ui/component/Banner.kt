@@ -1,4 +1,4 @@
-package com.harun.tmdbapp.ui.component
+package com.harun.tmdbapp.ui.screen.detail.ui.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +21,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
+import com.harun.tmdbapp.ui.component.state.ImagePlaceholder
+import com.harun.tmdbapp.ui.component.state.LoadingScreen
 
 @Composable
 fun Banner(

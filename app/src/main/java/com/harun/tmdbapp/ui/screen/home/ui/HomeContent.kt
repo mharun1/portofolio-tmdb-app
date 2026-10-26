@@ -13,9 +13,9 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.harun.tmdbapp.model.Movie
-import com.harun.tmdbapp.ui.component.ErrorScreen
-import com.harun.tmdbapp.ui.component.LoadingScreen
-import com.harun.tmdbapp.ui.component.MovieItem
+import com.harun.tmdbapp.ui.component.state.ErrorScreen
+import com.harun.tmdbapp.ui.component.state.LoadingScreen
+import com.harun.tmdbapp.ui.component.movie.MovieItem
 
 @Composable
 fun HomeContent(

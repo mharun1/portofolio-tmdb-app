@@ -1,4 +1,4 @@
-package com.harun.tmdbapp.ui.component
+package com.harun.tmdbapp.ui.screen.detail.ui.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +16,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
+import com.harun.tmdbapp.ui.component.state.ImagePlaceholder
+import com.harun.tmdbapp.ui.component.state.LoadingScreen
 
 @Composable
 fun CastItem(
