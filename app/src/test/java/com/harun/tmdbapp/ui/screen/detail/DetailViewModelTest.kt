@@ -31,6 +31,8 @@ class DetailViewModelTest {
             requestedId = id
             return resultToReturn ?: throw IllegalStateException("resultToReturn not set")
         }
+
+        override suspend fun getNowPlayingMovie(): Result<List<Movie>> = throw NotImplementedError()
     }
 
     private class SuspendingFakeRepository : Repository {
@@ -43,6 +45,8 @@ class DetailViewModelTest {
             deferredList.add(deferred)
             return deferred.await()
         }
+
+        override suspend fun getNowPlayingMovie(): Result<List<Movie>> = throw NotImplementedError()
     }
 
     private val sampleMovieDetail = MovieDetail(

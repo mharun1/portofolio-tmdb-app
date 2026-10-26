@@ -22,7 +22,10 @@ object ViewModelFactory {
     val Factory = viewModelFactory {
         initializer {
             val appContainer = tmdbApplication().container
-            HomeViewModel(appContainer.getMoviesUseCase)
+            HomeViewModel(
+                appContainer.getMoviesUseCase,
+                appContainer.getNowPlayingMovieUseCase
+            )
         }
     }
 

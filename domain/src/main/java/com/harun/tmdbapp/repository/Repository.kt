@@ -9,4 +9,5 @@ import kotlinx.coroutines.flow.Flow
 interface Repository {
     fun getMovies(category: MovieCategory): Flow<PagingData<Movie>>
     suspend fun getDetailMovie(id: Int): Result<MovieDetail>
+    suspend fun getNowPlayingMovie(): Result<List<Movie>>
 }

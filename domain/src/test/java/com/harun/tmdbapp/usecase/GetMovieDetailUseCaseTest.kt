@@ -25,6 +25,10 @@ class GetMovieDetailUseCaseTest {
             requestedId = id
             return resultToReturn ?: throw IllegalStateException("resultToReturn not set")
         }
+
+        override suspend fun getNowPlayingMovie(): Result<List<Movie>> {
+            throw NotImplementedError()
+        }
     }
 
     @Test

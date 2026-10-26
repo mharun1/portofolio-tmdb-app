@@ -54,4 +54,18 @@ class MovieRepository(
             Result.failure(e)
         }
     }
+
+    override suspend fun getNowPlayingMovie(): Result<List<Movie>> {
+        return try {
+            val playingMovie = apiService.getNowPlayingMovie()
+                .toDomain()
+                .movies
+                .take(10)
+            Result.success(playingMovie)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }

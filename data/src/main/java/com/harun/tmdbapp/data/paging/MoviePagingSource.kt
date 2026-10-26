@@ -14,7 +14,7 @@ private const val MAX_TMDB_PAGES = 500
 
 class MoviePagingSource(
     private val apiService: ApiService,
-    private val category: MovieCategory = MovieCategory.POPULAR,
+    private val category: MovieCategory,
     private val getGenres: suspend () -> Map<Int, String> = { emptyMap() },
 ): PagingSource<Int, Movie>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
@@ -24,7 +24,7 @@ class MoviePagingSource(
             val genreMap = getGenres()
             val response = when (category) {
                 MovieCategory.POPULAR -> apiService.getPopularMovies(page)
-                MovieCategory.TOP_RATED -> apiService.getTopRatedMovie(page)
+                MovieCategory.TOP_RATED -> apiService.getTopRatedMovies(page)
             }.toDomain(genreMap)
             val lastPage = minOf(response.totalPages, MAX_TMDB_PAGES)
 
