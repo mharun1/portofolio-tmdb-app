@@ -18,6 +18,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -92,6 +93,94 @@ class SearchViewModelTest {
             assertEquals("harbor", fakeRepository.lastQuery)
             assertEquals(1, snapshot.size)
             assertEquals("Midnight Harbor", snapshot.first().title)
+        } finally {
+            Dispatchers.resetMain()
+        }
+    }
+
+    @Test
+    fun `query is trimmed and duplicates are ignored`() = runTest {
+        Dispatchers.setMain(UnconfinedTestDispatcher(testScheduler))
+        try {
+            var callCount = 0
+            val fakeRepository = object : Repository {
+                override fun searchMovies(query: String): Flow<PagingData<Movie>> {
+                    callCount++
+                    return flowOf(PagingData.empty())
+                }
+                override fun getMovies(category: MovieCategory) = throw NotImplementedError()
+                override suspend fun getDetailMovie(id: Int) = throw NotImplementedError()
+                override suspend fun getNowPlayingMovie() = throw NotImplementedError()
+            }
+            val viewModel = SearchViewModel(SearchMovieUseCase(fakeRepository))
+
+            // Emit query with trailing space
+            viewModel.onQueryChange("batman ")
+            advanceTimeBy(350.milliseconds)
+
+            // Emit same query without trailing space (trimmed is same -> duplicate ignored)
+            viewModel.onQueryChange("batman")
+            advanceTimeBy(350.milliseconds)
+
+            flowOf(viewModel.searchResult.first()).asSnapshot()
+            assertEquals(1, callCount)
+        } finally {
+            Dispatchers.resetMain()
+        }
+    }
+
+    @Test
+    fun `blank query does not trigger repository search`() = runTest {
+        Dispatchers.setMain(UnconfinedTestDispatcher(testScheduler))
+        try {
+            val fakeRepository = FakeRepository()
+            val viewModel = SearchViewModel(SearchMovieUseCase(fakeRepository))
+
+            viewModel.onQueryChange("   ")
+            advanceTimeBy(350.milliseconds)
+
+            val snapshot = flowOf(viewModel.searchResult.first()).asSnapshot()
+            assertEquals(null, fakeRepository.lastQuery)
+            assertTrue(snapshot.isEmpty())
+        } finally {
+            Dispatchers.resetMain()
+        }
+    }
+
+    @Test
+    fun `rapid typing requests only the last query`() = runTest {
+        Dispatchers.setMain(UnconfinedTestDispatcher(testScheduler))
+        try {
+            val queriesRequested = mutableListOf<String>()
+            val fakeRepository = object : Repository {
+                override fun searchMovies(query: String): Flow<PagingData<Movie>> {
+                    queriesRequested.add(query)
+                    return flowOf(PagingData.empty())
+                }
+                override fun getMovies(category: MovieCategory) = throw NotImplementedError()
+                override suspend fun getDetailMovie(id: Int) = throw NotImplementedError()
+                override suspend fun getNowPlayingMovie() = throw NotImplementedError()
+            }
+            val viewModel = SearchViewModel(SearchMovieUseCase(fakeRepository))
+
+            // Rapid typing faster than 300ms debounce
+            viewModel.onQueryChange("h")
+            advanceTimeBy(100.milliseconds)
+            viewModel.onQueryChange("ha")
+            advanceTimeBy(100.milliseconds)
+            viewModel.onQueryChange("har")
+            advanceTimeBy(100.milliseconds)
+            viewModel.onQueryChange("harbor")
+
+            // Before debounce completes (300ms since last change)
+            advanceTimeBy(200.milliseconds)
+            assertTrue("No request before debounce window finishes", queriesRequested.isEmpty())
+
+            // After debounce completes
+            advanceTimeBy(150.milliseconds)
+            flowOf(viewModel.searchResult.first()).asSnapshot()
+
+            assertEquals(listOf("harbor"), queriesRequested)
         } finally {
             Dispatchers.resetMain()
         }

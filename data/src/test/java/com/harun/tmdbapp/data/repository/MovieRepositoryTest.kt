@@ -35,6 +35,12 @@ class MovieRepositoryTest {
             results = emptyList(),
             totalPages = 1
         )
+        var searchResponse: MovieListResponse = MovieListResponse(
+            page = 1,
+            results = emptyList(),
+            totalPages = 1
+        )
+        var lastSearchQuery: String? = null
         var nowPlayingResponse: MovieListResponse = MovieListResponse(
             page = 1,
             results = emptyList(),
@@ -95,7 +101,8 @@ class MovieRepositoryTest {
             if (shouldThrowException) {
                 throw exceptionToThrow
             }
-            return MovieListResponse(page = page, results = emptyList(), totalPages = 1)
+            lastSearchQuery = query
+            return searchResponse
         }
 
         override suspend fun getGenres(): GenreListResponse = GenreListResponse(emptyList())
@@ -199,6 +206,31 @@ class MovieRepositoryTest {
         assertEquals("Popular Movie", popularMovies.first().title)
         assertEquals(1, topRatedMovies.size)
         assertEquals("Top Rated Movie", topRatedMovies.first().title)
+    }
+
+    @Test
+    fun `searchMovies returns paged data from search endpoint`() = runTest {
+        val searchDto = MovieDto(
+            id = 10,
+            title = "Midnight Harbor",
+            poster = "/harbor.jpg",
+            genreIds = emptyList(),
+            rating = 8.5
+        )
+        val fakeApi = FakeApiService().apply {
+            searchResponse = MovieListResponse(
+                page = 1,
+                results = listOf(searchDto),
+                totalPages = 1
+            )
+        }
+        val repository = MovieRepository(fakeApi)
+
+        val searchMovies = repository.searchMovies("harbor").asSnapshot()
+
+        assertEquals(1, searchMovies.size)
+        assertEquals("Midnight Harbor", searchMovies.first().title)
+        assertEquals("harbor", fakeApi.lastSearchQuery)
     }
 
     @Test

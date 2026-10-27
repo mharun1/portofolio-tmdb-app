@@ -21,11 +21,13 @@ class SearchMoviePagingSourceTest {
         private val totalPages: Int = 2,
         private val shouldThrow: Boolean = false
     ) : ApiService {
+        var searchCallCount = 0
         var searchCalled = false
         var lastQueryRequested: String? = null
         var lastPageRequested: Int? = null
 
         override suspend fun searchMovies(query: String, page: Int): MovieListResponse {
+            searchCallCount++
             searchCalled = true
             lastQueryRequested = query
             lastPageRequested = page
@@ -48,28 +50,7 @@ class SearchMoviePagingSourceTest {
     }
 
     @Test
-    fun `blank query returns empty page immediately without calling api`() = runTest {
-        val fakeApi = FakeApiService()
-        val pagingSource = SearchMoviePagingSource(apiService = fakeApi, query = "   ")
-
-        val result = pagingSource.load(
-            PagingSource.LoadParams.Refresh(
-                key = null,
-                loadSize = 20,
-                placeholdersEnabled = false
-            )
-        )
-
-        assertTrue(result is PagingSource.LoadResult.Page)
-        assertFalse("API should not be called when query is blank", fakeApi.searchCalled)
-        val page = result as PagingSource.LoadResult.Page
-        assertTrue(page.data.isEmpty())
-        assertNull(page.prevKey)
-        assertNull(page.nextKey)
-    }
-
-    @Test
-    fun `search query calls search endpoint with correct query and page`() = runTest {
+    fun `the paging source passes the query to the fake API`() = runTest {
         val fakeApi = FakeApiService()
         val pagingSource = SearchMoviePagingSource(apiService = fakeApi, query = "harbor")
 
@@ -90,6 +71,47 @@ class SearchMoviePagingSourceTest {
         assertEquals("Search Movie 1", page.data.first().title)
         assertNull(page.prevKey)
         assertEquals(2, page.nextKey)
+    }
+
+    @Test
+    fun `blank query makes no API call (the fake counts calls)`() = runTest {
+        val fakeApi = FakeApiService()
+        val pagingSource = SearchMoviePagingSource(apiService = fakeApi, query = "   ")
+
+        val result = pagingSource.load(
+            PagingSource.LoadParams.Refresh(
+                key = null,
+                loadSize = 20,
+                placeholdersEnabled = false
+            )
+        )
+
+        assertTrue(result is PagingSource.LoadResult.Page)
+        assertEquals(0, fakeApi.searchCallCount)
+        assertFalse("API should not be called when query is blank", fakeApi.searchCalled)
+        val page = result as PagingSource.LoadResult.Page
+        assertTrue(page.data.isEmpty())
+        assertNull(page.prevKey)
+        assertNull(page.nextKey)
+    }
+
+    @Test
+    fun `query with no results and totalPages 0 has nextKey null`() = runTest {
+        val fakeApi = FakeApiService(totalPages = 0)
+        val pagingSource = SearchMoviePagingSource(apiService = fakeApi, query = "nonexistentmovie")
+
+        val result = pagingSource.load(
+            PagingSource.LoadParams.Refresh(
+                key = null,
+                loadSize = 20,
+                placeholdersEnabled = false
+            )
+        )
+
+        assertTrue(result is PagingSource.LoadResult.Page)
+        val page = result as PagingSource.LoadResult.Page
+        assertNull(page.prevKey)
+        assertNull("nextKey must be null when totalPages == 0", page.nextKey)
     }
 
     @Test
