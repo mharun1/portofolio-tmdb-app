@@ -6,6 +6,7 @@ import com.harun.tmdbapp.repository.Repository
 import com.harun.tmdbapp.usecase.GetMovieDetailUseCase
 import com.harun.tmdbapp.usecase.GetMoviesUseCase
 import com.harun.tmdbapp.usecase.GetNowPlayingMovieUseCase
+import com.harun.tmdbapp.usecase.SearchMovieUseCase
 
 /**
  * Dependency Injection container at the application level.
@@ -15,6 +16,7 @@ interface AppContainer {
     val getMoviesUseCase: GetMoviesUseCase
     val getMovieDetailUseCase: GetMovieDetailUseCase
     val getNowPlayingMovieUseCase: GetNowPlayingMovieUseCase
+    val searchMovieUseCase: SearchMovieUseCase
 }
 
 /**
@@ -34,5 +36,8 @@ class DefaultAppContainer : AppContainer {
     }
     override val getNowPlayingMovieUseCase: GetNowPlayingMovieUseCase by lazy {
         GetNowPlayingMovieUseCase(movieRepository)
+    }
+    override val searchMovieUseCase: SearchMovieUseCase by lazy {
+        SearchMovieUseCase(movieRepository)
     }
 }
