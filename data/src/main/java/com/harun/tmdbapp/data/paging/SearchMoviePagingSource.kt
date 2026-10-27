@@ -11,6 +11,17 @@ import java.io.IOException
 
 private const val MAX_TMDB_PAGES = 500
 
+/**
+ * Dedicated PagingSource for searching movies.
+ *
+ * A separate PagingSource was chosen over extending [MoviePagingSource] because:
+ * 1. Single Responsibility Principle: [MoviePagingSource] handles fixed feed categories
+ *    (Popular and Top Rated), while search handles dynamic user text queries.
+ * 2. Search-specific behavior: Search requires validating and short-circuiting blank queries
+ *    without network calls, and delegates to a distinct API endpoint (`search/movie`).
+ * 3. Independent evolution: Feed paging and search paging can change their configurations,
+ *    caching, or parameters independently without risking regression in the other.
+ */
 class SearchMoviePagingSource(
     private val apiService: ApiService,
     private val query: String,
@@ -35,7 +46,7 @@ class SearchMoviePagingSource(
             LoadResult.Page(
                 data = response.movies,
                 prevKey = if (page == 1) null else page - 1,
-                nextKey = if (page >= lastPage) null else page + 1
+                nextKey = if (response.totalPages == 0 || page >= lastPage) null else page + 1
             )
         } catch (e: HttpException) {
             LoadResult.Error(e)

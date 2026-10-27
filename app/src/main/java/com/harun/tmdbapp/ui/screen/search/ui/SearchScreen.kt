@@ -42,6 +42,12 @@ import com.harun.tmdbapp.ui.component.state.LoadingScreen
 import com.harun.tmdbapp.ui.component.movie.MovieItem
 import com.harun.tmdbapp.ui.screen.search.SearchViewModel
 
+import androidx.compose.foundation.text.input.clearText
+import androidx.compose.foundation.text.input.placeCursorAtEnd
+import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
+import androidx.compose.runtime.snapshotFlow
+
 @Composable
 fun SearchRoute(
     modifier: Modifier = Modifier,
@@ -76,6 +82,7 @@ fun SearchScreen(
 ) {
     var expanded by rememberSaveable { mutableStateOf(true) }
     val focusRequester = remember { FocusRequester() }
+    val textFieldState = rememberTextFieldState(initialText = query)
 
     BackHandler {
         onBack()
@@ -83,14 +90,31 @@ fun SearchScreen(
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
+        textFieldState.edit {
+            placeCursorAtEnd()
+        }
+    }
+
+    LaunchedEffect(query) {
+        if (textFieldState.text.toString() != query) {
+            textFieldState.setTextAndPlaceCursorAtEnd(query)
+        }
+    }
+
+    LaunchedEffect(textFieldState) {
+        snapshotFlow { textFieldState.text.toString() }
+            .collect { newQuery ->
+                if (newQuery != query) {
+                    onQueryChange(newQuery)
+                }
+            }
     }
 
     Box(modifier = modifier.fillMaxSize()) {
         SearchBar(
             inputField = {
                 SearchBarDefaults.InputField(
-                    query = query,
-                    onQueryChange = onQueryChange,
+                    state = textFieldState,
                     onSearch = { },
                     expanded = expanded,
                     onExpandedChange = { expanded = it },
@@ -104,8 +128,13 @@ fun SearchScreen(
                         }
                     },
                     trailingIcon = {
-                        if (query.isNotEmpty()) {
-                            IconButton(onClick = onClearQuery) {
+                        if (textFieldState.text.isNotEmpty()) {
+                            IconButton(
+                                onClick = {
+                                    textFieldState.clearText()
+                                    onClearQuery()
+                                }
+                            ) {
                                 Icon(
                                     imageVector = Icons.Default.Close,
                                     contentDescription = "Clear search"

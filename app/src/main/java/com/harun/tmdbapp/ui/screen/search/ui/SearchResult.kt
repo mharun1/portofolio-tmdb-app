@@ -10,6 +10,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -25,8 +32,18 @@ fun SearchResults(
     query: String,
     movies: LazyPagingItems<Movie>,
     onItemClick: (Int) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    listState: LazyListState = rememberLazyListState(),
 ) {
+    var previousQuery by rememberSaveable { mutableStateOf(query) }
+
+    LaunchedEffect(query) {
+        if (previousQuery != query) {
+            previousQuery = query
+            listState.scrollToItem(0)
+        }
+    }
+
     if (query.isBlank()) {
         Box(
             modifier = modifier.fillMaxSize(),
@@ -64,13 +81,14 @@ fun SearchResults(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "No movies found for \"$query\"",
+                        text = "No results for \"$query\"",
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             } else {
                 LazyColumn(
+                    state = listState,
                     modifier = modifier.fillMaxSize(),
                     contentPadding = PaddingValues(horizontal = 24.dp, vertical = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)

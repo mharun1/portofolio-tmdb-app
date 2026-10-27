@@ -16,6 +16,10 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlin.time.Duration.Companion.milliseconds
 
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+
 @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
 class SearchViewModel(
     private val searchMovieUseCase: SearchMovieUseCase
@@ -26,8 +30,14 @@ class SearchViewModel(
 
     val searchResult: Flow<PagingData<Movie>> = _searchQuery
         .debounce(300L.milliseconds)
+        .map { it.trim() }
+        .distinctUntilChanged()
         .flatMapLatest { query ->
-            searchMovieUseCase(query)
+            if (query.isBlank()) {
+                flowOf(PagingData.empty())
+            } else {
+                searchMovieUseCase(query)
+            }
         }
         .cachedIn(viewModelScope)
 
