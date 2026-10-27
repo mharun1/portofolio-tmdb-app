@@ -29,6 +29,10 @@ class GetMovieDetailUseCaseTest {
         override suspend fun getNowPlayingMovie(): Result<List<Movie>> {
             throw NotImplementedError()
         }
+
+        override fun searchMovies(query: String): Flow<PagingData<Movie>> {
+            TODO("Not yet implemented")
+        }
     }
 
     @Test

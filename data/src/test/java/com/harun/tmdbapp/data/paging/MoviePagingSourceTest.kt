@@ -54,6 +54,9 @@ class MoviePagingSourceTest {
         override suspend fun getNowPlayingMovie(): MovieListResponse =
             throw NotImplementedError()
 
+        override suspend fun searchMovies(query: String, page: Int): MovieListResponse =
+            throw NotImplementedError()
+
         override suspend fun getDetailMovie(id: Int, appendToResponse: String): DetailMovieResponse =
             throw NotImplementedError()
 

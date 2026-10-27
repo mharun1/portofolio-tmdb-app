@@ -91,6 +91,13 @@ class MovieRepositoryTest {
             return topRatedResponse
         }
 
+        override suspend fun searchMovies(query: String, page: Int): MovieListResponse {
+            if (shouldThrowException) {
+                throw exceptionToThrow
+            }
+            return MovieListResponse(page = page, results = emptyList(), totalPages = 1)
+        }
+
         override suspend fun getGenres(): GenreListResponse = GenreListResponse(emptyList())
         override suspend fun getImageConfiguration(): ConfigurationResponse = throw NotImplementedError()
     }
@@ -146,6 +153,7 @@ class MovieRepositoryTest {
             override suspend fun getNowPlayingMovie(): MovieListResponse = throw NotImplementedError()
             override suspend fun getPopularMovies(page: Int): MovieListResponse = throw NotImplementedError()
             override suspend fun getTopRatedMovies(page: Int): MovieListResponse = throw NotImplementedError()
+            override suspend fun searchMovies(query: String, page: Int): MovieListResponse = throw NotImplementedError()
             override suspend fun getGenres(): GenreListResponse = throw NotImplementedError()
             override suspend fun getImageConfiguration(): ConfigurationResponse = throw NotImplementedError()
         }

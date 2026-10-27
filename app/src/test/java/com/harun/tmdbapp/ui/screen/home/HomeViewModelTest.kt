@@ -32,6 +32,9 @@ class HomeViewModelTest {
         override fun getMovies(category: MovieCategory): Flow<PagingData<Movie>> =
             flowOf(PagingData.empty())
 
+        override fun searchMovies(query: String): Flow<PagingData<Movie>> =
+            flowOf(PagingData.empty())
+
         override suspend fun getDetailMovie(id: Int): Result<MovieDetail> =
             throw NotImplementedError()
 
@@ -116,6 +119,9 @@ class HomeViewModelTest {
 
                 override suspend fun getNowPlayingMovie(): Result<List<Movie>> =
                     Result.success(emptyList())
+
+                override fun searchMovies(query: String): Flow<PagingData<Movie>> =
+                    flowOf(PagingData.empty())
             }
 
             val viewModel = HomeViewModel(
