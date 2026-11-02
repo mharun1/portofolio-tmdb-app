@@ -43,7 +43,7 @@ class SearchMoviePagingSourceTest {
 
         override suspend fun getPopularMovies(page: Int): MovieListResponse = throw NotImplementedError()
         override suspend fun getTopRatedMovies(page: Int): MovieListResponse = throw NotImplementedError()
-        override suspend fun getNowPlayingMovie(): MovieListResponse = throw NotImplementedError()
+        override suspend fun getNowPlayingMovies(): MovieListResponse = throw NotImplementedError()
         override suspend fun getDetailMovie(id: Int, appendToResponse: String): DetailMovieResponse = throw NotImplementedError()
         override suspend fun getGenres(): GenreListResponse = throw NotImplementedError()
         override suspend fun getImageConfiguration(): ConfigurationResponse = throw NotImplementedError()

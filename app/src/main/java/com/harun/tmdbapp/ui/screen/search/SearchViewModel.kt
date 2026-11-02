@@ -13,12 +13,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlin.time.Duration.Companion.milliseconds
-
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
 class SearchViewModel(
@@ -28,11 +27,15 @@ class SearchViewModel(
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
 
+    private val _lastSearchedQuery = MutableStateFlow("")
+    val lastSearchedQuery: StateFlow<String> = _lastSearchedQuery.asStateFlow()
+
     val searchResult: Flow<PagingData<Movie>> = _searchQuery
         .debounce(300L.milliseconds)
         .map { it.trim() }
         .distinctUntilChanged()
         .flatMapLatest { query ->
+            _lastSearchedQuery.value = query
             if (query.isBlank()) {
                 flowOf(PagingData.empty())
             } else {
@@ -47,5 +50,6 @@ class SearchViewModel(
 
     fun onClearQuery() {
         _searchQuery.value = ""
+        _lastSearchedQuery.value = ""
     }
 }

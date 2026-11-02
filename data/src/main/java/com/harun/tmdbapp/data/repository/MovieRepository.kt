@@ -58,7 +58,7 @@ class MovieRepository(
 
     override suspend fun getNowPlayingMovie(): Result<List<Movie>> {
         return try {
-            val playingMovie = apiService.getNowPlayingMovie()
+            val playingMovie = apiService.getNowPlayingMovies()
                 .toDomain()
                 .movies
                 .take(10)

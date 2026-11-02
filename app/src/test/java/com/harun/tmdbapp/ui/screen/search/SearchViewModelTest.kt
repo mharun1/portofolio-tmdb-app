@@ -45,6 +45,7 @@ class SearchViewModelTest {
         val viewModel = SearchViewModel(SearchMovieUseCase(fakeRepository))
 
         assertEquals("", viewModel.searchQuery.value)
+        assertEquals("", viewModel.lastSearchedQuery.value)
     }
 
     @Test
@@ -67,6 +68,7 @@ class SearchViewModelTest {
 
         viewModel.onClearQuery()
         assertEquals("", viewModel.searchQuery.value)
+        assertEquals("", viewModel.lastSearchedQuery.value)
     }
 
     @Test
@@ -91,6 +93,7 @@ class SearchViewModelTest {
 
             val snapshot = flowOf(viewModel.searchResult.first()).asSnapshot()
             assertEquals("harbor", fakeRepository.lastQuery)
+            assertEquals("harbor", viewModel.lastSearchedQuery.value)
             assertEquals(1, snapshot.size)
             assertEquals("Midnight Harbor", snapshot.first().title)
         } finally {
@@ -124,6 +127,7 @@ class SearchViewModelTest {
 
             flowOf(viewModel.searchResult.first()).asSnapshot()
             assertEquals(1, callCount)
+            assertEquals("batman", viewModel.lastSearchedQuery.value)
         } finally {
             Dispatchers.resetMain()
         }
@@ -142,6 +146,7 @@ class SearchViewModelTest {
             val snapshot = flowOf(viewModel.searchResult.first()).asSnapshot()
             assertEquals(null, fakeRepository.lastQuery)
             assertTrue(snapshot.isEmpty())
+            assertEquals("", viewModel.lastSearchedQuery.value)
         } finally {
             Dispatchers.resetMain()
         }
@@ -175,12 +180,14 @@ class SearchViewModelTest {
             // Before debounce completes (300ms since last change)
             advanceTimeBy(200.milliseconds)
             assertTrue("No request before debounce window finishes", queriesRequested.isEmpty())
+            assertEquals("", viewModel.lastSearchedQuery.value)
 
             // After debounce completes
             advanceTimeBy(150.milliseconds)
             flowOf(viewModel.searchResult.first()).asSnapshot()
 
             assertEquals(listOf("harbor"), queriesRequested)
+            assertEquals("harbor", viewModel.lastSearchedQuery.value)
         } finally {
             Dispatchers.resetMain()
         }

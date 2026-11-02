@@ -30,6 +30,7 @@ import com.harun.tmdbapp.ui.component.state.LoadingScreen
 @Composable
 fun SearchResults(
     query: String,
+    lastSearchedQuery: String = query,
     movies: LazyPagingItems<Movie>,
     onItemClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
@@ -76,15 +77,24 @@ fun SearchResults(
         }
         is LoadState.NotLoading -> {
             if (movies.itemCount == 0) {
-                Box(
-                    modifier = modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "No results for \"$query\"",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                if (query.trim() == lastSearchedQuery && lastSearchedQuery.isNotBlank()) {
+                    Box(
+                        modifier = modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "No results for \"$lastSearchedQuery\"",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                } else {
+                    Box(
+                        modifier = modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        LoadingScreen()
+                    }
                 }
             } else {
                 LazyColumn(

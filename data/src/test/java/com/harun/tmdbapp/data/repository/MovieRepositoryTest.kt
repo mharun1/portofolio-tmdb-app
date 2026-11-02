@@ -76,7 +76,7 @@ class MovieRepositoryTest {
             )
         }
 
-        override suspend fun getNowPlayingMovie(): MovieListResponse {
+        override suspend fun getNowPlayingMovies(): MovieListResponse {
             if (shouldThrowException) {
                 throw exceptionToThrow
             }
@@ -157,7 +157,7 @@ class MovieRepositoryTest {
             override suspend fun getDetailMovie(id: Int, appendToResponse: String): DetailMovieResponse {
                 throw CancellationException("Cancelled")
             }
-            override suspend fun getNowPlayingMovie(): MovieListResponse = throw NotImplementedError()
+            override suspend fun getNowPlayingMovies(): MovieListResponse = throw NotImplementedError()
             override suspend fun getPopularMovies(page: Int): MovieListResponse = throw NotImplementedError()
             override suspend fun getTopRatedMovies(page: Int): MovieListResponse = throw NotImplementedError()
             override suspend fun searchMovies(query: String, page: Int): MovieListResponse = throw NotImplementedError()

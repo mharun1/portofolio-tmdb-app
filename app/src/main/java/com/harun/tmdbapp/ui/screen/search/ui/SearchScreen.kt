@@ -1,20 +1,15 @@
 package com.harun.tmdbapp.ui.screen.search.ui
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
@@ -25,21 +20,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.harun.tmdbapp.core.ViewModelFactory
 import com.harun.tmdbapp.model.Movie
-import com.harun.tmdbapp.ui.component.state.ErrorScreen
-import com.harun.tmdbapp.ui.component.state.LoadingScreen
-import com.harun.tmdbapp.ui.component.movie.MovieItem
 import com.harun.tmdbapp.ui.screen.search.SearchViewModel
 
 import androidx.compose.foundation.text.input.clearText
@@ -56,10 +47,12 @@ fun SearchRoute(
     onBack: () -> Unit
 ) {
     val query by viewModel.searchQuery.collectAsStateWithLifecycle()
+    val lastSearchedQuery by viewModel.lastSearchedQuery.collectAsStateWithLifecycle()
     val movies = viewModel.searchResult.collectAsLazyPagingItems()
 
     SearchScreen(
         query = query,
+        lastSearchedQuery = lastSearchedQuery,
         onQueryChange = viewModel::onQueryChange,
         onClearQuery = viewModel::onClearQuery,
         movies = movies,
@@ -73,6 +66,7 @@ fun SearchRoute(
 @Composable
 fun SearchScreen(
     query: String,
+    lastSearchedQuery: String = query,
     onQueryChange: (String) -> Unit,
     onClearQuery: () -> Unit,
     movies: LazyPagingItems<Movie>,
@@ -83,6 +77,8 @@ fun SearchScreen(
     var expanded by rememberSaveable { mutableStateOf(true) }
     val focusRequester = remember { FocusRequester() }
     val textFieldState = rememberTextFieldState(initialText = query)
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     BackHandler {
         onBack()
@@ -104,9 +100,7 @@ fun SearchScreen(
     LaunchedEffect(textFieldState) {
         snapshotFlow { textFieldState.text.toString() }
             .collect { newQuery ->
-                if (newQuery != query) {
-                    onQueryChange(newQuery)
-                }
+                onQueryChange(newQuery)
             }
     }
 
@@ -115,7 +109,10 @@ fun SearchScreen(
             inputField = {
                 SearchBarDefaults.InputField(
                     state = textFieldState,
-                    onSearch = { },
+                    onSearch = {
+                        focusManager.clearFocus()
+                        keyboardController?.hide()
+                    },
                     expanded = expanded,
                     onExpandedChange = { expanded = it },
                     placeholder = { Text("Search movie") },
@@ -151,6 +148,7 @@ fun SearchScreen(
         ) {
             SearchResults(
                 query = query,
+                lastSearchedQuery = lastSearchedQuery,
                 movies = movies,
                 onItemClick = onItemClick
             )
