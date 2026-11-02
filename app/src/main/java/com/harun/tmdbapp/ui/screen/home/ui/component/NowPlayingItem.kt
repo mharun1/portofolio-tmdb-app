@@ -45,7 +45,7 @@ fun NowPlayingItem(
     ) {
         SubcomposeAsyncImage(
             model = posterUrl,
-            contentDescription = title,
+            contentDescription = null,
             contentScale = ContentScale.Crop,
             loading = { LoadingScreen() },
             error = { ImagePlaceholder() },

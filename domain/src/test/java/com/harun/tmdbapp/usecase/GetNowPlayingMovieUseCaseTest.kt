@@ -37,7 +37,7 @@ class GetNowPlayingMovieUseCaseTest {
         )
         fakeRepository.resultToReturn = Result.success(expectedMovies)
 
-        val useCase = GetNowPlayingMovieUseCase(fakeRepository)
+        val useCase = GetNowPlayingMoviesUseCase(fakeRepository)
         val result = useCase()
 
         assertEquals(1, fakeRepository.callCount)
@@ -51,7 +51,7 @@ class GetNowPlayingMovieUseCaseTest {
         val expectedException = RuntimeException("Network failure")
         fakeRepository.resultToReturn = Result.failure(expectedException)
 
-        val useCase = GetNowPlayingMovieUseCase(fakeRepository)
+        val useCase = GetNowPlayingMoviesUseCase(fakeRepository)
         val result = useCase()
 
         assertEquals(1, fakeRepository.callCount)

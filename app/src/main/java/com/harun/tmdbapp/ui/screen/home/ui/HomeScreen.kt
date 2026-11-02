@@ -42,7 +42,6 @@ import com.harun.tmdbapp.model.Movie
 import com.harun.tmdbapp.model.MovieCategory
 import com.harun.tmdbapp.ui.component.state.ErrorScreen
 import com.harun.tmdbapp.ui.component.state.LoadingScreen
-import com.harun.tmdbapp.ui.component.movie.MovieItem
 import com.harun.tmdbapp.ui.screen.home.HomeViewModel
 import com.harun.tmdbapp.ui.screen.home.NowPlayingUiState
 import com.harun.tmdbapp.ui.screen.home.ui.component.CategorySwitch
@@ -189,43 +188,10 @@ fun HomeScreen(
                         }
                     }
                 } else {
-                    items(
-                        count = movies.itemCount,
-                        key = { index -> "${movies[index]?.id ?: "movie"}_$index" },
-                    ) { index ->
-                        val movie = movies[index]
-                        if (movie != null) {
-                            MovieItem(
-                                poster = movie.posterUrl,
-                                title = movie.title,
-                                rating = movie.rating,
-                                genres = movie.genres,
-                                onItemClick = { onItemClick(movie.id) },
-                                modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 12.dp),
-                            )
-                        }
-                    }
-
-                    if (movies.loadState.append is LoadState.Loading) {
-                        item(key = "movies_append_loading") {
-                            LoadingScreen(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                            )
-                        }
-                    }
-
-                    val appendError = movies.loadState.append as? LoadState.Error
-                    if (appendError != null) {
-                        item(key = "movies_append_error") {
-                            ErrorScreen(
-                                modifier = Modifier.fillMaxWidth(),
-                                errorMessage = "Couldn't load more movies. Check your connection.",
-                                onClick = { movies.retry() },
-                            )
-                        }
-                    }
+                    movieListItems(
+                        movies = movies,
+                        onItemClick = onItemClick,
+                    )
                 }
             }
         }

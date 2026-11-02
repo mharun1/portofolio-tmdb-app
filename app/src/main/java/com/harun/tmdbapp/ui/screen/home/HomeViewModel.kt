@@ -7,7 +7,7 @@ import androidx.paging.cachedIn
 import com.harun.tmdbapp.model.Movie
 import com.harun.tmdbapp.model.MovieCategory
 import com.harun.tmdbapp.usecase.GetMoviesUseCase
-import com.harun.tmdbapp.usecase.GetNowPlayingMovieUseCase
+import com.harun.tmdbapp.usecase.GetNowPlayingMoviesUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModel(
     private val getMoviesUseCase: GetMoviesUseCase,
-    private val getNowPlayingMovieUseCase: GetNowPlayingMovieUseCase
+    private val getNowPlayingMoviesUseCase: GetNowPlayingMoviesUseCase
 ): ViewModel() {
 
     private val _selectedCategory = MutableStateFlow(MovieCategory.POPULAR)
@@ -51,11 +51,11 @@ class HomeViewModel(
         loadNowPlayingMovie()
     }
 
-    fun loadNowPlayingMovie() {
+    private fun loadNowPlayingMovie() {
         loadJob?.cancel()
         _nowPlayingUiState.value = NowPlayingUiState.Loading
         loadJob = viewModelScope.launch {
-            getNowPlayingMovieUseCase()
+            getNowPlayingMoviesUseCase()
                 .onSuccess { movie ->
                     _nowPlayingUiState.value = NowPlayingUiState.Success(movie)
                 }

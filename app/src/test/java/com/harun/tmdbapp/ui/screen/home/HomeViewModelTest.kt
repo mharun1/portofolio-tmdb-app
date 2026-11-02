@@ -7,7 +7,7 @@ import com.harun.tmdbapp.model.MovieCategory
 import com.harun.tmdbapp.model.MovieDetail
 import com.harun.tmdbapp.repository.Repository
 import com.harun.tmdbapp.usecase.GetMoviesUseCase
-import com.harun.tmdbapp.usecase.GetNowPlayingMovieUseCase
+import com.harun.tmdbapp.usecase.GetNowPlayingMoviesUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -63,7 +63,7 @@ class HomeViewModelTest {
         val fakeRepository = FakeRepository()
         val viewModel = HomeViewModel(
             getMoviesUseCase = GetMoviesUseCase(fakeRepository),
-            getNowPlayingMovieUseCase = GetNowPlayingMovieUseCase(fakeRepository)
+            getNowPlayingMoviesUseCase = GetNowPlayingMoviesUseCase(fakeRepository)
         )
 
         assertEquals(MovieCategory.POPULAR, viewModel.selectedCategory.value)
@@ -74,7 +74,7 @@ class HomeViewModelTest {
         val fakeRepository = FakeRepository()
         val viewModel = HomeViewModel(
             getMoviesUseCase = GetMoviesUseCase(fakeRepository),
-            getNowPlayingMovieUseCase = GetNowPlayingMovieUseCase(fakeRepository)
+            getNowPlayingMoviesUseCase = GetNowPlayingMoviesUseCase(fakeRepository)
         )
 
         viewModel.onCategorySelected(MovieCategory.TOP_RATED)
@@ -126,7 +126,7 @@ class HomeViewModelTest {
 
             val viewModel = HomeViewModel(
                 getMoviesUseCase = GetMoviesUseCase(fakeRepository),
-                getNowPlayingMovieUseCase = GetNowPlayingMovieUseCase(fakeRepository)
+                getNowPlayingMoviesUseCase = GetNowPlayingMoviesUseCase(fakeRepository)
             )
 
             // Initial emissions reflect Popular
@@ -153,7 +153,7 @@ class HomeViewModelTest {
             }
             val viewModel = HomeViewModel(
                 getMoviesUseCase = GetMoviesUseCase(fakeRepository),
-                getNowPlayingMovieUseCase = GetNowPlayingMovieUseCase(fakeRepository)
+                getNowPlayingMoviesUseCase = GetNowPlayingMoviesUseCase(fakeRepository)
             )
 
             assertEquals(NowPlayingUiState.Loading, viewModel.nowPlayingUiState.value)
@@ -176,7 +176,7 @@ class HomeViewModelTest {
             }
             val viewModel = HomeViewModel(
                 getMoviesUseCase = GetMoviesUseCase(fakeRepository),
-                getNowPlayingMovieUseCase = GetNowPlayingMovieUseCase(fakeRepository)
+                getNowPlayingMoviesUseCase = GetNowPlayingMoviesUseCase(fakeRepository)
             )
 
             assertEquals(NowPlayingUiState.Loading, viewModel.nowPlayingUiState.value)
@@ -203,7 +203,7 @@ class HomeViewModelTest {
             }
             val viewModel = HomeViewModel(
                 getMoviesUseCase = GetMoviesUseCase(fakeRepository),
-                getNowPlayingMovieUseCase = GetNowPlayingMovieUseCase(fakeRepository)
+                getNowPlayingMoviesUseCase = GetNowPlayingMoviesUseCase(fakeRepository)
             )
             advanceUntilIdle()
             assertTrue(viewModel.nowPlayingUiState.value is NowPlayingUiState.Error)
@@ -233,7 +233,7 @@ class HomeViewModelTest {
             }
             val viewModel = HomeViewModel(
                 getMoviesUseCase = GetMoviesUseCase(fakeRepository),
-                getNowPlayingMovieUseCase = GetNowPlayingMovieUseCase(fakeRepository)
+                getNowPlayingMoviesUseCase = GetNowPlayingMoviesUseCase(fakeRepository)
             )
             advanceUntilIdle()
 

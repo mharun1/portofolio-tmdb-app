@@ -95,7 +95,7 @@ fun SearchResults(
                 ) {
                     items(
                         count = movies.itemCount,
-                        key = { index -> "${movies[index]?.id ?: "movie"}_$index" }
+                        key = { index -> "${movies.peek(index)?.id ?: "movie"}_$index" }
                     ) { index ->
                         val movie = movies[index]
                         if (movie != null) {
