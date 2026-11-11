@@ -8,3 +8,6 @@ data object Home: NavKey
 
 @Serializable
 data class Detail(val movieId: Int): NavKey
+
+@Serializable
+data object Search: NavKey

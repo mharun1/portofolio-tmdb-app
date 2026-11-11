@@ -1,4 +1,4 @@
-package com.harun.tmdbapp.ui.component
+package com.harun.tmdbapp.ui.component.state
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

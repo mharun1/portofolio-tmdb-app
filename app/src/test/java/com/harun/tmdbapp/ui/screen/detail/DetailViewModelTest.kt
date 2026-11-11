@@ -26,6 +26,7 @@ class DetailViewModelTest {
         var requestedId: Int? = null
 
         override fun getMovies(category: com.harun.tmdbapp.model.MovieCategory): Flow<PagingData<Movie>> = throw NotImplementedError()
+        override fun searchMovies(query: String): Flow<PagingData<Movie>> = throw NotImplementedError()
 
         override suspend fun getDetailMovie(id: Int): Result<MovieDetail> {
             requestedId = id
@@ -39,6 +40,7 @@ class DetailViewModelTest {
         val deferredList = mutableListOf<CompletableDeferred<Result<MovieDetail>>>()
 
         override fun getMovies(category: com.harun.tmdbapp.model.MovieCategory): Flow<PagingData<Movie>> = throw NotImplementedError()
+        override fun searchMovies(query: String): Flow<PagingData<Movie>> = throw NotImplementedError()
 
         override suspend fun getDetailMovie(id: Int): Result<MovieDetail> {
             val deferred = CompletableDeferred<Result<MovieDetail>>()

@@ -31,10 +31,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.harun.tmdbapp.model.CastMember
 import com.harun.tmdbapp.model.MovieDetail
-import com.harun.tmdbapp.ui.component.Banner
-import com.harun.tmdbapp.ui.component.CastItem
-import com.harun.tmdbapp.ui.component.GenreRow
-import com.harun.tmdbapp.ui.component.MovieInfoItem
+import com.harun.tmdbapp.ui.screen.detail.ui.component.Banner
+import com.harun.tmdbapp.ui.screen.detail.ui.component.CastItem
+import com.harun.tmdbapp.ui.screen.detail.ui.component.GenreRow
+import com.harun.tmdbapp.ui.screen.detail.ui.component.MovieInfoItem
 import com.harun.tmdbapp.ui.theme.PortofolioTMDBAppTheme
 import com.harun.tmdbapp.ui.theme.StarYellow
 import com.harun.tmdbapp.ui.utils.toDisplayDate
@@ -97,9 +97,21 @@ fun DetailContent(
                 }
                 Spacer(Modifier.height(12.dp))
                 Row {
-                    MovieInfoItem(label = "Duration", data = movie.runtimeMinutes.toDisplayRuntime(), modifier = Modifier.weight(1f))
-                    MovieInfoItem(label = "Language", data = movie.languages.firstOrNull() ?: "-", modifier = Modifier.weight(1f))
-                    MovieInfoItem(label = "Release Date", data = movie.releaseDate.toDisplayDate(), modifier = Modifier.weight(1f))
+                    MovieInfoItem(
+                        label = "Duration",
+                        data = movie.runtimeMinutes.toDisplayRuntime(),
+                        modifier = Modifier.weight(1f)
+                    )
+                    MovieInfoItem(
+                        label = "Language",
+                        data = movie.languages.firstOrNull() ?: "-",
+                        modifier = Modifier.weight(1f)
+                    )
+                    MovieInfoItem(
+                        label = "Release Date",
+                        data = movie.releaseDate.toDisplayDate(),
+                        modifier = Modifier.weight(1f)
+                    )
                 }
                 Spacer(Modifier.height(16.dp))
                 Text(

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.harun.tmdbapp.ui.screen.detail.DetailViewModel
 import com.harun.tmdbapp.ui.screen.home.HomeViewModel
+import com.harun.tmdbapp.ui.screen.search.SearchViewModel
 
 /**
  * Extension function to easily access the AppContainer from the CreationExtras.
@@ -26,6 +27,10 @@ object ViewModelFactory {
                 appContainer.getMoviesUseCase,
                 appContainer.getNowPlayingMovieUseCase
             )
+        }
+        initializer {
+            val appContainer = tmdbApplication().container
+            SearchViewModel(appContainer.searchMovieUseCase)
         }
     }
 

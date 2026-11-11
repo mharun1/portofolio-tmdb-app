@@ -9,6 +9,7 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.harun.tmdbapp.ui.screen.detail.ui.DetailRoute
 import com.harun.tmdbapp.ui.screen.home.ui.HomeRoute
+import com.harun.tmdbapp.ui.screen.search.ui.SearchRoute
 
 @Composable
 fun Navigation(modifier: Modifier = Modifier) {
@@ -28,6 +29,9 @@ fun Navigation(modifier: Modifier = Modifier) {
                         modifier = modifier,
                         onItemClick = { id ->
                             backStack.add(Detail(id))
+                        },
+                        onSearchClick = {
+                            backStack.add(Search)
                         }
                     )
                 }
@@ -36,6 +40,17 @@ fun Navigation(modifier: Modifier = Modifier) {
                         modifier = modifier,
                         movieId = key.movieId,
                         onBack = { backStack.removeLastOrNull() },
+                    )
+                }
+                is Search -> NavEntry(key) {
+                    SearchRoute(
+                        modifier = modifier,
+                        onItemClick = { id ->
+                            backStack.add(Detail(id))
+                        },
+                        onBack = {
+                            backStack.removeLastOrNull()
+                        }
                     )
                 }
                 else -> throw IllegalArgumentException("Unknown key: $key")

@@ -1,4 +1,4 @@
-package com.harun.tmdbapp.ui.screen.home.ui
+package com.harun.tmdbapp.ui.screen.home.ui.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,9 +19,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.harun.tmdbapp.model.Movie
-import com.harun.tmdbapp.ui.component.ErrorScreen
-import com.harun.tmdbapp.ui.component.LoadingScreen
-import com.harun.tmdbapp.ui.component.NowPlayingItem
+import com.harun.tmdbapp.ui.component.state.ErrorScreen
+import com.harun.tmdbapp.ui.component.state.LoadingScreen
 import com.harun.tmdbapp.ui.screen.home.NowPlayingUiState
 import com.harun.tmdbapp.ui.theme.PortofolioTMDBAppTheme
 

@@ -22,6 +22,10 @@ class GetMoviesUseCaseTest {
             return flowToReturn
         }
 
+        override fun searchMovies(query: String): Flow<PagingData<Movie>> {
+            TODO("Not yet implemented")
+        }
+
         override suspend fun getDetailMovie(id: Int): Result<MovieDetail> {
             throw NotImplementedError()
         }
