@@ -30,7 +30,9 @@ fun LazyListScope.movieListItems(
                 rating = movie.rating,
                 genres = movie.genres,
                 onItemClick = { onItemClick(movie.id) },
-                modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 12.dp),
+                modifier = Modifier
+                    .animateItem()
+                    .padding(start = 24.dp, end = 24.dp, bottom = 12.dp),
             )
         }
     }

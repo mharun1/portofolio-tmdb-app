@@ -9,15 +9,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
+import coil.request.ImageRequest
 import com.harun.tmdbapp.ui.component.state.ImagePlaceholder
-import com.harun.tmdbapp.ui.component.state.LoadingScreen
+import com.harun.tmdbapp.ui.component.state.ShimmerPlaceholder
 
 @Composable
 fun CastItem(
@@ -26,12 +29,16 @@ fun CastItem(
     castName: String,
     characterName: String,
 ) {
+    val context = LocalContext.current
     Column(modifier = modifier.width(100.dp)) {
         SubcomposeAsyncImage(
-            model = pictureUrl,
+            model = ImageRequest.Builder(context)
+                .data(pictureUrl)
+                .crossfade(true)
+                .build(),
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            loading = { LoadingScreen() },
+            loading = { ShimmerPlaceholder(Modifier.fillMaxSize()) },
             error = { ImagePlaceholder() },
             modifier = Modifier
                 .height(120.dp)

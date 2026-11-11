@@ -1,5 +1,10 @@
 package com.harun.tmdbapp.ui.screen.home.ui.component
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,58 +47,68 @@ fun NowPlayingSection(
             modifier = Modifier.padding(horizontal = 24.dp)
         )
         Spacer(Modifier.height(12.dp))
-        when (uiState) {
-            is NowPlayingUiState.Loading -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(280.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    LoadingScreen()
-                }
-            }
-            is NowPlayingUiState.Error -> {
-                ErrorScreen(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(280.dp),
-                    errorMessage = uiState.message,
-                    onClick = onRetry
-                )
-            }
-            is NowPlayingUiState.Success -> {
-                if (uiState.movies.isEmpty()) {
+        AnimatedContent(
+            targetState = uiState,
+            transitionSpec = {
+                fadeIn(animationSpec = tween(durationMillis = 350)) togetherWith
+                    fadeOut(animationSpec = tween(durationMillis = 200))
+            },
+            label = "now_playing_transition"
+        ) { state ->
+            when (state) {
+                is NowPlayingUiState.Loading -> {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(280.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            text = stringResource(id = R.string.empty_now_playing),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                        LoadingScreen()
                     }
-                } else {
-                    LazyRow(
-                        contentPadding = PaddingValues(horizontal = 24.dp),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                }
+                is NowPlayingUiState.Error -> {
+                    ErrorScreen(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(280.dp)
-                    ) {
-                        items(
-                            items = uiState.movies,
-                            key = { it.id }
-                        ) { movie ->
-                            NowPlayingItem(
-                                posterUrl = movie.posterUrl,
-                                title = movie.title,
-                                rating = movie.rating,
-                                onItemClick = { onItemClick(movie.id) }
+                            .height(280.dp),
+                        errorMessage = state.message,
+                        onClick = onRetry
+                    )
+                }
+                is NowPlayingUiState.Success -> {
+                    if (state.movies.isEmpty()) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(280.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.empty_now_playing),
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
+                        }
+                    } else {
+                        LazyRow(
+                            contentPadding = PaddingValues(horizontal = 24.dp),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(280.dp)
+                        ) {
+                            items(
+                                items = state.movies,
+                                key = { it.id }
+                            ) { movie ->
+                                NowPlayingItem(
+                                    modifier = Modifier.animateItem(),
+                                    posterUrl = movie.posterUrl,
+                                    title = movie.title,
+                                    rating = movie.rating,
+                                    onItemClick = { onItemClick(movie.id) }
+                                )
+                            }
                         }
                     }
                 }

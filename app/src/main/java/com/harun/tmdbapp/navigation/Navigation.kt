@@ -1,5 +1,12 @@
 package com.harun.tmdbapp.navigation
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
@@ -22,6 +29,45 @@ fun Navigation(modifier: Modifier = Modifier) {
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator()
         ),
+        transitionSpec = {
+            (slideInHorizontally(
+                initialOffsetX = { fullWidth -> (fullWidth * 0.25f).toInt() },
+                animationSpec = tween(durationMillis = 350, easing = FastOutSlowInEasing)
+            ) + fadeIn(
+                animationSpec = tween(durationMillis = 250)
+            )) togetherWith (slideOutHorizontally(
+                targetOffsetX = { fullWidth -> -(fullWidth * 0.25f).toInt() },
+                animationSpec = tween(durationMillis = 350, easing = FastOutSlowInEasing)
+            ) + fadeOut(
+                animationSpec = tween(durationMillis = 200)
+            ))
+        },
+        popTransitionSpec = {
+            (slideInHorizontally(
+                initialOffsetX = { fullWidth -> -(fullWidth * 0.25f).toInt() },
+                animationSpec = tween(durationMillis = 350, easing = FastOutSlowInEasing)
+            ) + fadeIn(
+                animationSpec = tween(durationMillis = 250)
+            )) togetherWith (slideOutHorizontally(
+                targetOffsetX = { fullWidth -> (fullWidth * 0.25f).toInt() },
+                animationSpec = tween(durationMillis = 350, easing = FastOutSlowInEasing)
+            ) + fadeOut(
+                animationSpec = tween(durationMillis = 200)
+            ))
+        },
+        predictivePopTransitionSpec = {
+            (slideInHorizontally(
+                initialOffsetX = { fullWidth -> -(fullWidth * 0.25f).toInt() },
+                animationSpec = tween(durationMillis = 350, easing = FastOutSlowInEasing)
+            ) + fadeIn(
+                animationSpec = tween(durationMillis = 250)
+            )) togetherWith (slideOutHorizontally(
+                targetOffsetX = { fullWidth -> (fullWidth * 0.25f).toInt() },
+                animationSpec = tween(durationMillis = 350, easing = FastOutSlowInEasing)
+            ) + fadeOut(
+                animationSpec = tween(durationMillis = 200)
+            ))
+        },
         entryProvider = { key ->
             when (key) {
                 is Home -> NavEntry(key) {

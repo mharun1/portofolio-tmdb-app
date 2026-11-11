@@ -38,6 +38,12 @@ import com.harun.tmdbapp.ui.component.movie.MovieItem
 import com.harun.tmdbapp.ui.component.state.ErrorScreen
 import com.harun.tmdbapp.ui.component.state.LoadingScreen
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
+
 @Composable
 fun SearchResults(
     query: String,
@@ -83,51 +89,60 @@ fun SearchResults(
         return
     }
 
-    when (movies.loadState.refresh) {
-        is LoadState.Loading -> {
-            Box(
-                modifier = modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                LoadingScreen()
+    AnimatedContent(
+        targetState = movies.loadState.refresh,
+        transitionSpec = {
+            fadeIn(animationSpec = tween(durationMillis = 300)) togetherWith
+                fadeOut(animationSpec = tween(durationMillis = 150))
+        },
+        label = "search_refresh_state",
+        modifier = modifier.fillMaxSize()
+    ) { refreshState ->
+        when (refreshState) {
+            is LoadState.Loading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    LoadingScreen()
+                }
             }
-        }
-        is LoadState.Error -> {
-            ErrorScreen(
-                modifier = modifier.fillMaxSize(),
-                errorMessage = stringResource(id = R.string.search_error),
-                onClick = { movies.retry() }
-            )
-        }
-        is LoadState.NotLoading -> {
-            if (movies.itemCount == 0) {
-                if (query.trim() == lastSearchedQuery && lastSearchedQuery.isNotBlank()) {
-                    Box(
-                        modifier = modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.search_no_results, lastSearchedQuery),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = TextAlign.Center
-                        )
+            is LoadState.Error -> {
+                ErrorScreen(
+                    modifier = Modifier.fillMaxSize(),
+                    errorMessage = stringResource(id = R.string.search_error),
+                    onClick = { movies.retry() }
+                )
+            }
+            is LoadState.NotLoading -> {
+                if (movies.itemCount == 0) {
+                    if (query.trim() == lastSearchedQuery && lastSearchedQuery.isNotBlank()) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.search_no_results, lastSearchedQuery),
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    } else {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            LoadingScreen()
+                        }
                     }
                 } else {
-                    Box(
-                        modifier = modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
+                    LazyColumn(
+                        state = listState,
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        LoadingScreen()
-                    }
-                }
-            } else {
-                LazyColumn(
-                    state = listState,
-                    modifier = modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(horizontal = 24.dp, vertical = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
                     items(
                         count = movies.itemCount,
                         key = { index -> "${movies.peek(index)?.id ?: "movie"}_$index" }
@@ -135,6 +150,7 @@ fun SearchResults(
                         val movie = movies[index]
                         if (movie != null) {
                             MovieItem(
+                                modifier = Modifier.animateItem(),
                                 poster = movie.posterUrl,
                                 title = movie.title,
                                 rating = movie.rating,
@@ -174,4 +190,5 @@ fun SearchResults(
             }
         }
     }
+}
 }
