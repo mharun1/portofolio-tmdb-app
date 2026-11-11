@@ -2,6 +2,7 @@ package com.harun.tmdbapp.ui.screen.home.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -70,18 +71,16 @@ fun HomeRoute(
     val nowPlayingUiState by viewModel.nowPlayingUiState.collectAsStateWithLifecycle()
     val selectedCategory by viewModel.selectedCategory.collectAsStateWithLifecycle()
 
-    Scaffold(modifier = modifier.fillMaxSize()) { innerPadding ->
-        HomeScreen(
-            nowPlayingUiState = nowPlayingUiState,
-            onRetryNowPlaying = viewModel::retry,
-            movies = movies,
-            selectedCategory = selectedCategory,
-            onCategorySelected = viewModel::onCategorySelected,
-            modifier = Modifier.padding(innerPadding),
-            onItemClick = onItemClick,
-            onSearchClick = onSearchClick,
-        )
-    }
+    HomeScreen(
+        nowPlayingUiState = nowPlayingUiState,
+        onRetryNowPlaying = viewModel::retry,
+        movies = movies,
+        selectedCategory = selectedCategory,
+        onCategorySelected = viewModel::onCategorySelected,
+        modifier = modifier.fillMaxSize(),
+        onItemClick = onItemClick,
+        onSearchClick = onSearchClick,
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -125,15 +124,15 @@ fun HomeScreen(
     LazyColumn(
         state = listState,
         modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(bottom = 24.dp),
     ) {
         // App Header with Title and TMDB Attribution / About icon button
         item(key = "home_header") {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 8.dp),
-                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween,
+                    .padding(horizontal = 24.dp)
+                    .padding(bottom = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
