@@ -15,9 +15,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.harun.tmdbapp.R
 import com.harun.tmdbapp.model.Movie
 import com.harun.tmdbapp.ui.component.state.ErrorScreen
 import com.harun.tmdbapp.ui.component.state.LoadingScreen
@@ -33,7 +35,7 @@ fun NowPlayingSection(
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
-            text = "Now Playing",
+            text = stringResource(id = R.string.section_now_playing),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurface,
@@ -69,7 +71,7 @@ fun NowPlayingSection(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "No movies available",
+                            text = stringResource(id = R.string.empty_now_playing),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )

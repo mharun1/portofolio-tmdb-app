@@ -10,6 +10,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.harun.tmdbapp.R
 
 @Composable
 fun ImagePlaceholder(modifier: Modifier = Modifier) {
@@ -21,7 +23,7 @@ fun ImagePlaceholder(modifier: Modifier = Modifier) {
     ) {
         Icon(
             imageVector = Icons.Default.BrokenImage,
-            contentDescription = "Error loading image",
+            contentDescription = stringResource(id = R.string.error_loading_image),
             tint = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }

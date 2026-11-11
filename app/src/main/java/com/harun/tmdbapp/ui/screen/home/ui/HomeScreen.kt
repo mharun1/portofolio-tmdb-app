@@ -3,6 +3,7 @@ package com.harun.tmdbapp.ui.screen.home.ui
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,19 +18,26 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -37,15 +45,19 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.harun.tmdbapp.R
 import com.harun.tmdbapp.core.ViewModelFactory
 import com.harun.tmdbapp.model.Movie
 import com.harun.tmdbapp.model.MovieCategory
+import com.harun.tmdbapp.ui.component.about.AboutBottomSheet
+import com.harun.tmdbapp.ui.component.about.TmdbAttributionFooter
 import com.harun.tmdbapp.ui.component.state.ErrorScreen
 import com.harun.tmdbapp.ui.component.state.LoadingScreen
 import com.harun.tmdbapp.ui.screen.home.HomeViewModel
 import com.harun.tmdbapp.ui.screen.home.NowPlayingUiState
 import com.harun.tmdbapp.ui.screen.home.ui.component.CategorySwitch
 import com.harun.tmdbapp.ui.screen.home.ui.component.NowPlayingSection
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeRoute(
@@ -72,6 +84,7 @@ fun HomeRoute(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
@@ -85,6 +98,9 @@ fun HomeScreen(
     onSearchClick: () -> Unit = {},
 ) {
     var previousCategory by rememberSaveable { mutableStateOf(selectedCategory) }
+    var showAboutSheet by rememberSaveable { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(selectedCategory) {
         if (previousCategory != selectedCategory) {
@@ -93,17 +109,62 @@ fun HomeScreen(
         }
     }
 
+    if (showAboutSheet) {
+        AboutBottomSheet(
+            sheetState = sheetState,
+            onDismissRequest = {
+                coroutineScope.launch { sheetState.hide() }.invokeOnCompletion {
+                    if (!sheetState.isVisible) {
+                        showAboutSheet = false
+                    }
+                }
+            }
+        )
+    }
+
     LazyColumn(
         state = listState,
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(bottom = 24.dp),
     ) {
-        // 0. Search Bar (navigates to Search Screen)
+        // App Header with Title and TMDB Attribution / About icon button
+        item(key = "home_header") {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 8.dp),
+                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column {
+                    Text(
+                        text = stringResource(id = R.string.app_name),
+                        style = MaterialTheme.typography.headlineMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = stringResource(id = R.string.app_subtitle),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                IconButton(onClick = { showAboutSheet = true }) {
+                    Icon(
+                        imageVector = Icons.Outlined.Info,
+                        contentDescription = stringResource(id = R.string.about_button_desc),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        }
+
+        // Search Bar (navigates to Search Screen)
         item(key = "search_bar") {
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 24.dp, end = 24.dp, top = 24.dp)
+                    .padding(horizontal = 24.dp, vertical = 8.dp)
                     .clickable { onSearchClick() },
                 shape = RoundedCornerShape(50),
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
@@ -115,12 +176,12 @@ fun HomeScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Search,
-                        contentDescription = "Search",
+                        contentDescription = stringResource(id = R.string.search_icon_desc),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Spacer(Modifier.width(12.dp))
                     Text(
-                        text = "Search movie",
+                        text = stringResource(id = R.string.search_placeholder),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -167,7 +228,7 @@ fun HomeScreen(
                 item(key = "movies_error") {
                     ErrorScreen(
                         modifier = Modifier.fillMaxWidth(),
-                        errorMessage = "Couldn't load movies. Check your connection.",
+                        errorMessage = stringResource(id = R.string.error_movies),
                         onClick = { movies.retry() },
                     )
                 }
@@ -182,7 +243,7 @@ fun HomeScreen(
                             contentAlignment = Alignment.Center,
                         ) {
                             Text(
-                                text = "No movies found",
+                                text = stringResource(id = R.string.empty_movies),
                                 textAlign = TextAlign.Center,
                             )
                         }
@@ -192,6 +253,11 @@ fun HomeScreen(
                         movies = movies,
                         onItemClick = onItemClick,
                     )
+
+                    // TMDB Attribution Footer at end of movies list
+                    item(key = "tmdb_attribution_footer") {
+                        TmdbAttributionFooter()
+                    }
                 }
             }
         }

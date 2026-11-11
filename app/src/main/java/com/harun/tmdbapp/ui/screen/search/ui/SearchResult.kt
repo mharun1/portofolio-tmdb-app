@@ -19,10 +19,21 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.Icon
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
+import com.harun.tmdbapp.R
 import com.harun.tmdbapp.model.Movie
+import com.harun.tmdbapp.ui.component.about.TmdbAttributionFooter
 import com.harun.tmdbapp.ui.component.movie.MovieItem
 import com.harun.tmdbapp.ui.component.state.ErrorScreen
 import com.harun.tmdbapp.ui.component.state.LoadingScreen
@@ -50,11 +61,24 @@ fun SearchResults(
             modifier = modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = "Type a title to search for movies",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(24.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Search,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                    modifier = Modifier.size(56.dp)
+                )
+                Spacer(Modifier.height(12.dp))
+                Text(
+                    text = stringResource(id = R.string.search_prompt),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
         return
     }
@@ -71,7 +95,7 @@ fun SearchResults(
         is LoadState.Error -> {
             ErrorScreen(
                 modifier = modifier.fillMaxSize(),
-                errorMessage = "Couldn't load search results. Check your connection.",
+                errorMessage = stringResource(id = R.string.search_error),
                 onClick = { movies.retry() }
             )
         }
@@ -83,9 +107,10 @@ fun SearchResults(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "No results for \"$lastSearchedQuery\"",
+                            text = stringResource(id = R.string.search_no_results, lastSearchedQuery),
                             style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center
                         )
                     }
                 } else {
@@ -134,10 +159,16 @@ fun SearchResults(
                         item(key = "append_error") {
                             ErrorScreen(
                                 modifier = Modifier.fillMaxWidth(),
-                                errorMessage = "Couldn't load more movies. Check your connection.",
+                                errorMessage = stringResource(id = R.string.search_append_error),
                                 onClick = { movies.retry() }
                             )
                         }
+                    }
+
+                    item(key = "search_tmdb_attribution") {
+                        TmdbAttributionFooter(
+                            modifier = Modifier.padding(horizontal = 0.dp)
+                        )
                     }
                 }
             }

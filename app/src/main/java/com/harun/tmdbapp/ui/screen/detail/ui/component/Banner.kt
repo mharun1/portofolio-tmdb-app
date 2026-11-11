@@ -19,8 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
+import com.harun.tmdbapp.R
 import com.harun.tmdbapp.ui.component.state.ImagePlaceholder
 import com.harun.tmdbapp.ui.component.state.LoadingScreen
 
@@ -70,7 +72,7 @@ fun Banner(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                    contentDescription = "Back button"
+                    contentDescription = stringResource(id = R.string.detail_back_desc)
                 )
             }
         }

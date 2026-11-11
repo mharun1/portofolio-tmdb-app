@@ -115,12 +115,12 @@ fun SearchScreen(
                     },
                     expanded = expanded,
                     onExpandedChange = { expanded = it },
-                    placeholder = { Text("Search movie") },
+                    placeholder = { Text(androidx.compose.ui.res.stringResource(id = com.harun.tmdbapp.R.string.search_placeholder)) },
                     leadingIcon = {
                         IconButton(onClick = onBack) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Back"
+                                contentDescription = androidx.compose.ui.res.stringResource(id = com.harun.tmdbapp.R.string.search_back_desc)
                             )
                         }
                     },
@@ -134,7 +134,7 @@ fun SearchScreen(
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Close,
-                                    contentDescription = "Clear search"
+                                    contentDescription = androidx.compose.ui.res.stringResource(id = com.harun.tmdbapp.R.string.search_clear_desc)
                                 )
                             }
                         }
