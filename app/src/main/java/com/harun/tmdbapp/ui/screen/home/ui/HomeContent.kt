@@ -4,9 +4,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
+import com.harun.tmdbapp.R
 import com.harun.tmdbapp.model.Movie
 import com.harun.tmdbapp.ui.component.movie.MovieItem
 import com.harun.tmdbapp.ui.component.state.ErrorScreen
@@ -28,7 +30,9 @@ fun LazyListScope.movieListItems(
                 rating = movie.rating,
                 genres = movie.genres,
                 onItemClick = { onItemClick(movie.id) },
-                modifier = Modifier.padding(start = 24.dp, end = 24.dp, bottom = 12.dp),
+                modifier = Modifier
+                    .animateItem()
+                    .padding(start = 24.dp, end = 24.dp, bottom = 12.dp),
             )
         }
     }
@@ -48,7 +52,7 @@ fun LazyListScope.movieListItems(
         item(key = "movies_append_error") {
             ErrorScreen(
                 modifier = Modifier.fillMaxWidth(),
-                errorMessage = "Couldn't load more movies. Check your connection.",
+                errorMessage = stringResource(id = R.string.error_append_movies),
                 onClick = { movies.retry() },
             )
         }

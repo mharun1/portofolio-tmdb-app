@@ -1,5 +1,10 @@
 package com.harun.tmdbapp.ui.screen.detail.ui
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -41,24 +46,33 @@ fun DetailScreen(
     onRetry: () -> Unit,
     onBack: () -> Unit
 ) {
-    when (uiState) {
-        is DetailUiState.Error -> {
-            ErrorScreen(
-                modifier = modifier.fillMaxSize(),
-                errorMessage = uiState.errorMessage,
-                onClick = onRetry,
-            )
-        }
-        DetailUiState.Loading -> {
-            LoadingScreen(modifier = modifier.fillMaxSize())
-        }
-        is DetailUiState.Success -> {
-            val movie = uiState.movieDetail
-            DetailContent(
-                movie = movie,
-                onBack = onBack,
-                modifier = modifier.fillMaxSize()
-            )
+    AnimatedContent(
+        targetState = uiState,
+        transitionSpec = {
+            fadeIn(animationSpec = tween(durationMillis = 350)) togetherWith
+                fadeOut(animationSpec = tween(durationMillis = 200))
+        },
+        label = "detail_screen_transition"
+    ) { state ->
+        when (state) {
+            is DetailUiState.Error -> {
+                ErrorScreen(
+                    modifier = modifier.fillMaxSize(),
+                    errorMessage = state.errorMessage,
+                    onClick = onRetry,
+                )
+            }
+            DetailUiState.Loading -> {
+                LoadingScreen(modifier = modifier.fillMaxSize())
+            }
+            is DetailUiState.Success -> {
+                val movie = state.movieDetail
+                DetailContent(
+                    movie = movie,
+                    onBack = onBack,
+                    modifier = modifier.fillMaxSize()
+                )
+            }
         }
     }
 }

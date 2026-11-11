@@ -19,13 +19,30 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.Icon
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
+import com.harun.tmdbapp.R
 import com.harun.tmdbapp.model.Movie
+import com.harun.tmdbapp.ui.component.about.TmdbAttributionFooter
 import com.harun.tmdbapp.ui.component.movie.MovieItem
 import com.harun.tmdbapp.ui.component.state.ErrorScreen
 import com.harun.tmdbapp.ui.component.state.LoadingScreen
+
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 
 @Composable
 fun SearchResults(
@@ -50,59 +67,82 @@ fun SearchResults(
             modifier = modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = "Type a title to search for movies",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(24.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Search,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                    modifier = Modifier.size(56.dp)
+                )
+                Spacer(Modifier.height(12.dp))
+                Text(
+                    text = stringResource(id = R.string.search_prompt),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center
+                )
+            }
         }
         return
     }
 
-    when (movies.loadState.refresh) {
-        is LoadState.Loading -> {
-            Box(
-                modifier = modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                LoadingScreen()
+    AnimatedContent(
+        targetState = movies.loadState.refresh,
+        transitionSpec = {
+            fadeIn(animationSpec = tween(durationMillis = 300)) togetherWith
+                fadeOut(animationSpec = tween(durationMillis = 150))
+        },
+        label = "search_refresh_state",
+        modifier = modifier.fillMaxSize()
+    ) { refreshState ->
+        when (refreshState) {
+            is LoadState.Loading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    LoadingScreen()
+                }
             }
-        }
-        is LoadState.Error -> {
-            ErrorScreen(
-                modifier = modifier.fillMaxSize(),
-                errorMessage = "Couldn't load search results. Check your connection.",
-                onClick = { movies.retry() }
-            )
-        }
-        is LoadState.NotLoading -> {
-            if (movies.itemCount == 0) {
-                if (query.trim() == lastSearchedQuery && lastSearchedQuery.isNotBlank()) {
-                    Box(
-                        modifier = modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "No results for \"$lastSearchedQuery\"",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+            is LoadState.Error -> {
+                ErrorScreen(
+                    modifier = Modifier.fillMaxSize(),
+                    errorMessage = stringResource(id = R.string.search_error),
+                    onClick = { movies.retry() }
+                )
+            }
+            is LoadState.NotLoading -> {
+                if (movies.itemCount == 0) {
+                    if (query.trim() == lastSearchedQuery && lastSearchedQuery.isNotBlank()) {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.search_no_results, lastSearchedQuery),
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    } else {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            LoadingScreen()
+                        }
                     }
                 } else {
-                    Box(
-                        modifier = modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
+                    LazyColumn(
+                        state = listState,
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        LoadingScreen()
-                    }
-                }
-            } else {
-                LazyColumn(
-                    state = listState,
-                    modifier = modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(horizontal = 24.dp, vertical = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
                     items(
                         count = movies.itemCount,
                         key = { index -> "${movies.peek(index)?.id ?: "movie"}_$index" }
@@ -110,6 +150,7 @@ fun SearchResults(
                         val movie = movies[index]
                         if (movie != null) {
                             MovieItem(
+                                modifier = Modifier.animateItem(),
                                 poster = movie.posterUrl,
                                 title = movie.title,
                                 rating = movie.rating,
@@ -134,13 +175,20 @@ fun SearchResults(
                         item(key = "append_error") {
                             ErrorScreen(
                                 modifier = Modifier.fillMaxWidth(),
-                                errorMessage = "Couldn't load more movies. Check your connection.",
+                                errorMessage = stringResource(id = R.string.search_append_error),
                                 onClick = { movies.retry() }
                             )
                         }
+                    }
+
+                    item(key = "search_tmdb_attribution") {
+                        TmdbAttributionFooter(
+                            modifier = Modifier.padding(horizontal = 0.dp)
+                        )
                     }
                 }
             }
         }
     }
+}
 }

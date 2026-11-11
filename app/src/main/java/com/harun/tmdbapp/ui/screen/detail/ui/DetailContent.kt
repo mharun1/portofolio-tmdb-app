@@ -25,12 +25,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.harun.tmdbapp.R
 import com.harun.tmdbapp.model.CastMember
 import com.harun.tmdbapp.model.MovieDetail
+import com.harun.tmdbapp.ui.component.about.TmdbAttributionFooter
 import com.harun.tmdbapp.ui.screen.detail.ui.component.Banner
 import com.harun.tmdbapp.ui.screen.detail.ui.component.CastItem
 import com.harun.tmdbapp.ui.screen.detail.ui.component.GenreRow
@@ -39,7 +42,6 @@ import com.harun.tmdbapp.ui.theme.PortofolioTMDBAppTheme
 import com.harun.tmdbapp.ui.theme.StarYellow
 import com.harun.tmdbapp.ui.utils.toDisplayDate
 import com.harun.tmdbapp.ui.utils.toDisplayRuntime
-import java.util.Locale
 
 @Composable
 fun DetailContent(
@@ -87,7 +89,7 @@ fun DetailContent(
                     )
                     Spacer(Modifier.width(8.dp))
                     Text(
-                        text = String.format(Locale.US, "%.1f/10 TMDb", movie.rating),
+                        text = stringResource(id = R.string.rating_format, movie.rating),
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
@@ -98,31 +100,31 @@ fun DetailContent(
                 Spacer(Modifier.height(12.dp))
                 Row {
                     MovieInfoItem(
-                        label = "Duration",
+                        label = stringResource(id = R.string.detail_duration_label),
                         data = movie.runtimeMinutes.toDisplayRuntime(),
                         modifier = Modifier.weight(1f)
                     )
                     MovieInfoItem(
-                        label = "Language",
-                        data = movie.languages.firstOrNull() ?: "-",
+                        label = stringResource(id = R.string.detail_language_label),
+                        data = movie.languages.firstOrNull() ?: stringResource(id = R.string.fallback_dash),
                         modifier = Modifier.weight(1f)
                     )
                     MovieInfoItem(
-                        label = "Release Date",
+                        label = stringResource(id = R.string.detail_release_date_label),
                         data = movie.releaseDate.toDisplayDate(),
                         modifier = Modifier.weight(1f)
                     )
                 }
                 Spacer(Modifier.height(16.dp))
                 Text(
-                    text = "Summary",
+                    text = stringResource(id = R.string.detail_summary_label),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    text = movie.summary.ifBlank { "No summary available." },
+                    text = movie.summary.ifBlank { stringResource(id = R.string.detail_no_summary) },
                     style = MaterialTheme.typography.bodyMedium,
                     lineHeight = 22.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -130,7 +132,7 @@ fun DetailContent(
                 if (movie.cast.isNotEmpty()) {
                     Spacer(Modifier.height(16.dp))
                     Text(
-                        text = "Cast",
+                        text = stringResource(id = R.string.detail_cast_label),
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.onSurface
@@ -152,6 +154,10 @@ fun DetailContent(
                         }
                     }
                 }
+                Spacer(Modifier.height(24.dp))
+                TmdbAttributionFooter(
+                    modifier = Modifier.padding(horizontal = 0.dp)
+                )
             }
         }
     }

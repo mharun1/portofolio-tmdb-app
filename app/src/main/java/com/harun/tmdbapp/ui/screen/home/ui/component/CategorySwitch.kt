@@ -7,8 +7,10 @@ import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.harun.tmdbapp.R
 import com.harun.tmdbapp.model.MovieCategory
 import com.harun.tmdbapp.ui.theme.PortofolioTMDBAppTheme
 
@@ -30,8 +32,8 @@ fun CategorySwitch(
                 label = {
                     Text(
                         text = when (category) {
-                            MovieCategory.POPULAR -> "Popular"
-                            MovieCategory.TOP_RATED -> "Top Rated"
+                            MovieCategory.POPULAR -> stringResource(id = R.string.category_popular)
+                            MovieCategory.TOP_RATED -> stringResource(id = R.string.category_top_rated)
                         }
                     )
                 }

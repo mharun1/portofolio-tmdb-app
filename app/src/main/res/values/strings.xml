@@ -1,3 +1,48 @@
 <resources>
-    <string name="app_name">Portofolio - TMDB App</string>
+    <string name="app_name">FilmKu</string>
+    <string name="app_subtitle">Movie Explorer</string>
+
+    <!-- TMDB Attribution & About -->
+    <string name="about_title">About &amp; Attribution</string>
+    <string name="about_app_description">Discover popular, top-rated, and now playing movies with detailed cast, summaries, and ratings.</string>
+    <string name="tmdb_attribution_notice">This product uses the TMDB API but is not endorsed or certified by TMDB.</string>
+    <string name="tmdb_powered_by">Powered by TMDB</string>
+    <string name="tmdb_logo_desc">TMDB Logo</string>
+    <string name="about_button_desc">About and TMDB attribution</string>
+    <string name="close_button">Close</string>
+
+    <!-- Home Screen -->
+    <string name="section_now_playing">Now Playing</string>
+    <string name="category_popular">Popular</string>
+    <string name="category_top_rated">Top Rated</string>
+    <string name="empty_now_playing">No movies available</string>
+    <string name="empty_movies">No movies found</string>
+    <string name="error_movies">Couldn\'t load movies. Check your connection.</string>
+    <string name="error_append_movies">Couldn\'t load more movies. Check your connection.</string>
+
+    <!-- Search Screen -->
+    <string name="search_placeholder">Search movie</string>
+    <string name="search_icon_desc">Search</string>
+    <string name="search_clear_desc">Clear search</string>
+    <string name="search_back_desc">Navigate back</string>
+    <string name="search_prompt">Type a title to search for movies</string>
+    <string name="search_no_results">No results for \"%1$s\"</string>
+    <string name="search_error">Couldn\'t load search results. Check your connection.</string>
+    <string name="search_append_error">Couldn\'t load more movies. Check your connection.</string>
+
+    <!-- Detail Screen -->
+    <string name="detail_duration_label">Duration</string>
+    <string name="detail_language_label">Language</string>
+    <string name="detail_release_date_label">Release Date</string>
+    <string name="detail_summary_label">Summary</string>
+    <string name="detail_cast_label">Cast</string>
+    <string name="detail_no_summary">No summary available.</string>
+    <string name="detail_back_desc">Navigate back</string>
+
+    <!-- Shared & Formatting -->
+    <string name="rating_format">%1$.1f/10 TMDB</string>
+    <string name="retry_button">Retry</string>
+    <string name="error_loading_image">Error loading image</string>
+    <string name="fallback_dash">-</string>
+    <string name="fallback_unknown">Unknown</string>
 </resources>
