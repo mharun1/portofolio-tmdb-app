@@ -42,13 +42,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.harun.tmdbapp.R
-import com.harun.tmdbapp.core.ViewModelFactory
 import com.harun.tmdbapp.model.Movie
 import com.harun.tmdbapp.model.MovieCategory
 import com.harun.tmdbapp.ui.component.about.AboutBottomSheet
@@ -64,7 +63,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeRoute(
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = viewModel(factory = ViewModelFactory.Factory),
+    viewModel: HomeViewModel = hiltViewModel(),
     onItemClick: (Int) -> Unit,
     onSearchClick: () -> Unit = {},
 ) {

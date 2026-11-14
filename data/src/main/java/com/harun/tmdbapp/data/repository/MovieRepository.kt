@@ -13,8 +13,9 @@ import com.harun.tmdbapp.model.MovieDetail
 import com.harun.tmdbapp.repository.Repository
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class MovieRepository(
+class MovieRepository @Inject constructor(
     private val apiService: ApiService
 ): Repository {
 

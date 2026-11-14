@@ -25,11 +25,10 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.harun.tmdbapp.core.ViewModelFactory
 import com.harun.tmdbapp.model.Movie
 import com.harun.tmdbapp.ui.screen.search.SearchViewModel
 
@@ -42,7 +41,7 @@ import androidx.compose.runtime.snapshotFlow
 @Composable
 fun SearchRoute(
     modifier: Modifier = Modifier,
-    viewModel: SearchViewModel = viewModel(factory = ViewModelFactory.Factory),
+    viewModel: SearchViewModel = hiltViewModel(),
     onItemClick: (Int) -> Unit,
     onBack: () -> Unit
 ) {
