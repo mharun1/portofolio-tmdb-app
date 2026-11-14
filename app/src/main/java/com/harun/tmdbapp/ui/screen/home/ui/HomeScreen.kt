@@ -2,6 +2,7 @@ package com.harun.tmdbapp.ui.screen.home.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -70,18 +72,16 @@ fun HomeRoute(
     val nowPlayingUiState by viewModel.nowPlayingUiState.collectAsStateWithLifecycle()
     val selectedCategory by viewModel.selectedCategory.collectAsStateWithLifecycle()
 
-    Scaffold(modifier = modifier.fillMaxSize()) { innerPadding ->
-        HomeScreen(
-            nowPlayingUiState = nowPlayingUiState,
-            onRetryNowPlaying = viewModel::retry,
-            movies = movies,
-            selectedCategory = selectedCategory,
-            onCategorySelected = viewModel::onCategorySelected,
-            modifier = Modifier.padding(innerPadding),
-            onItemClick = onItemClick,
-            onSearchClick = onSearchClick,
-        )
-    }
+    HomeScreen(
+        nowPlayingUiState = nowPlayingUiState,
+        onRetryNowPlaying = viewModel::retry,
+        movies = movies,
+        selectedCategory = selectedCategory,
+        onCategorySelected = viewModel::onCategorySelected,
+        modifier = modifier.fillMaxSize(),
+        onItemClick = onItemClick,
+        onSearchClick = onSearchClick,
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -125,15 +125,16 @@ fun HomeScreen(
     LazyColumn(
         state = listState,
         modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(bottom = 24.dp),
     ) {
         // App Header with Title and TMDB Attribution / About icon button
         item(key = "home_header") {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 8.dp),
-                horizontalArrangement = androidx.compose.foundation.layout.Arrangement.SpaceBetween,
+                    .statusBarsPadding()
+                    .padding(horizontal = 24.dp)
+                    .padding(bottom = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
