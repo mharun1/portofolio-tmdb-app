@@ -5,8 +5,9 @@ import com.harun.tmdbapp.model.Movie
 import com.harun.tmdbapp.model.MovieCategory
 import com.harun.tmdbapp.repository.Repository
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class GetMoviesUseCase(
+class GetMoviesUseCase @Inject constructor(
     private val repository: Repository,
 ) {
     operator fun invoke(category: MovieCategory): Flow<PagingData<Movie>> {

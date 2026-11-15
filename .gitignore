@@ -33,3 +33,7 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+# Agent & AI tools
+.agents/
+skills-lock.json

@@ -38,6 +38,7 @@ import com.harun.tmdbapp.ui.screen.detail.ui.component.Banner
 import com.harun.tmdbapp.ui.screen.detail.ui.component.CastItem
 import com.harun.tmdbapp.ui.screen.detail.ui.component.GenreRow
 import com.harun.tmdbapp.ui.screen.detail.ui.component.MovieInfoItem
+import com.harun.tmdbapp.ui.screen.detail.ui.component.RatingBar
 import com.harun.tmdbapp.ui.theme.PortofolioTMDBAppTheme
 import com.harun.tmdbapp.ui.theme.StarYellow
 import com.harun.tmdbapp.ui.utils.toDisplayDate
@@ -47,6 +48,10 @@ import com.harun.tmdbapp.ui.utils.toDisplayRuntime
 fun DetailContent(
     modifier: Modifier = Modifier,
     movie: MovieDetail,
+    isBookmarked: Boolean = false,
+    userRating: Int? = null,
+    onToggleBookmark: () -> Unit = {},
+    onRatingChanged: (Int) -> Unit = {},
     onBack: () -> Unit
 ) {
     Column(
@@ -57,6 +62,8 @@ fun DetailContent(
     ) {
         Banner(
             backdropUrl = movie.backdropUrl,
+            isBookmarked = isBookmarked,
+            onToggleBookmark = onToggleBookmark,
             onBack = onBack,
             modifier = Modifier
                 .fillMaxWidth()
@@ -114,6 +121,38 @@ fun DetailContent(
                         data = movie.releaseDate.toDisplayDate(),
                         modifier = Modifier.weight(1f)
                     )
+                }
+                Spacer(Modifier.height(16.dp))
+
+                // User Rating Section
+                Text(
+                    text = stringResource(id = R.string.detail_your_rating),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(Modifier.height(6.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    RatingBar(
+                        rating = userRating,
+                        onRatingChanged = onRatingChanged
+                    )
+                    if (userRating != null) {
+                        Text(
+                            text = stringResource(id = R.string.user_rating_format, userRating),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    } else {
+                        Text(
+                            text = stringResource(id = R.string.detail_rate_movie),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                        )
+                    }
                 }
                 Spacer(Modifier.height(16.dp))
                 Text(
