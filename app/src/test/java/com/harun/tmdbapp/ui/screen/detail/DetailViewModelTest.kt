@@ -9,6 +9,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
@@ -188,5 +189,56 @@ class DetailViewModelTest {
         } finally {
             Dispatchers.resetMain()
         }
+    @Test
+    fun `toggleBookmark updates isBookmarked in Success state`() = runTest {
+        val dispatcher = StandardTestDispatcher(testScheduler)
+        Dispatchers.setMain(dispatcher)
+        try {
+            val repository = FakeRepository().apply {
+                resultToReturn = Result.success(sampleMovieDetail)
+            }
+            val bookmarkRepo = object : com.harun.tmdbapp.repository.BookmarkRepository {
+                val flow = kotlinx.coroutines.flow.MutableStateFlow<List<com.harun.tmdbapp.model.BookmarkedMovie>>(emptyList())
+                override fun getBookmarkedMovies(): Flow<List<com.harun.tmdbapp.model.BookmarkedMovie>> = flow
+                override fun isBookmarked(movieId: Int): Flow<Boolean> =
+                    flow.map { list -> list.any { it.movieId == movieId } }
+                override fun getUserRating(movieId: Int): Flow<Int?> =
+                    flow.map { list -> list.find { it.movieId == movieId }?.userRating }
+                override suspend fun toggleBookmark(movie: com.harun.tmdbapp.model.BookmarkedMovie) {
+                    val list = flow.value.toMutableList()
+                    if (list.any { it.movieId == movie.movieId }) {
+                        list.removeAll { it.movieId == movie.movieId }
+                    } else {
+                        list.add(movie)
+                    }
+                    flow.value = list
+                }
+                override suspend fun setUserRating(movieId: Int, rating: Int) {}
+                override suspend fun removeBookmark(movieId: Int) {}
+            }
+
+            val viewModel = DetailViewModel(
+                movieId = 101,
+                getMovieDetailUseCase = GetMovieDetailUseCase(repository),
+                isBookmarkedUseCase = com.harun.tmdbapp.usecase.IsBookmarkedUseCase(bookmarkRepo),
+                toggleBookmarkUseCase = com.harun.tmdbapp.usecase.ToggleBookmarkUseCase(bookmarkRepo),
+                setUserRatingUseCase = com.harun.tmdbapp.usecase.SetUserRatingUseCase(bookmarkRepo),
+                getUserRatingUseCase = com.harun.tmdbapp.usecase.GetUserRatingUseCase(bookmarkRepo)
+            )
+
+            advanceUntilIdle()
+            val state1 = viewModel.uiState.value as DetailUiState.Success
+            assertEquals(false, state1.isBookmarked)
+
+            viewModel.toggleBookmark()
+            advanceUntilIdle()
+
+            val state2 = viewModel.uiState.value as DetailUiState.Success
+            assertEquals(true, state2.isBookmarked)
+        } finally {
+            Dispatchers.resetMain()
+        }
+    }
+
     }
 }
