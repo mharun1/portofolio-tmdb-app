@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -27,11 +29,14 @@ import coil.request.ImageRequest
 import com.harun.tmdbapp.R
 import com.harun.tmdbapp.ui.component.state.ImagePlaceholder
 import com.harun.tmdbapp.ui.component.state.ShimmerPlaceholder
+import com.harun.tmdbapp.ui.theme.StarYellow
 
 @Composable
 fun Banner(
     modifier: Modifier = Modifier,
     backdropUrl: String?,
+    isBookmarked: Boolean = false,
+    onToggleBookmark: () -> Unit = {},
     onBack: () -> Unit
 ) {
     val context = LocalContext.current
@@ -77,8 +82,23 @@ fun Banner(
                 )
             ) {
                 Icon(
-                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(id = R.string.detail_back_desc)
+                )
+            }
+
+            IconButton(
+                onClick = onToggleBookmark,
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = Color.Black.copy(alpha = 0.4f),
+                    contentColor = if (isBookmarked) StarYellow else Color.White
+                )
+            ) {
+                Icon(
+                    imageVector = if (isBookmarked) Icons.Filled.Bookmark else Icons.Outlined.BookmarkBorder,
+                    contentDescription = stringResource(
+                        id = if (isBookmarked) R.string.detail_bookmark_remove else R.string.detail_bookmark_add
+                    )
                 )
             }
         }
