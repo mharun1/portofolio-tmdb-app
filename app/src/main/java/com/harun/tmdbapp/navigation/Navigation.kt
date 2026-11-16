@@ -28,6 +28,7 @@ import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDe
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.harun.tmdbapp.ui.screen.bookmark.ui.BookmarkRoute
 import com.harun.tmdbapp.ui.screen.detail.ui.DetailRoute
 import com.harun.tmdbapp.ui.screen.home.ui.HomeRoute
 import com.harun.tmdbapp.ui.screen.search.ui.SearchRoute
@@ -103,12 +104,10 @@ fun Navigation(modifier: Modifier = Modifier) {
                             )
                         }
                         is Bookmark -> NavEntry(key) {
-                            Box(
-                                modifier = modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text("Bookmark Screen")
-                            }
+                            BookmarkRoute(
+                                modifier = modifier,
+                                onItemClick = { id -> navState.navigate(Detail(id)) }
+                            )
                         }
                         is Profile -> NavEntry(key) {
                             Box(
