@@ -48,14 +48,48 @@ fun Navigation(modifier: Modifier = Modifier) {
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
+            val entryProvider: (androidx.navigation3.runtime.NavKey) -> NavEntry<androidx.navigation3.runtime.NavKey> = { key ->
+                when (key) {
+                    is Home -> NavEntry(key) {
+                        HomeRoute(
+                            modifier = modifier,
+                            onItemClick = { id -> navState.navigate(Detail(id)) },
+                            onSearchClick = { navState.navigate(Search) }
+                        )
+                    }
+                    is Bookmark -> NavEntry(key) {
+                        BookmarkRoute(
+                            modifier = modifier,
+                            onItemClick = { id -> navState.navigate(Detail(id)) }
+                        )
+                    }
+                    is Profile -> NavEntry(key) {
+                        ProfileRoute(
+                            modifier = modifier
+                        )
+                    }
+                    is Detail -> NavEntry(key) {
+                        DetailRoute(
+                            modifier = modifier,
+                            movieId = key.movieId,
+                            onBack = { navState.goBack() },
+                        )
+                    }
+                    is Search -> NavEntry(key) {
+                        SearchRoute(
+                            modifier = modifier,
+                            onItemClick = { id -> navState.navigate(Detail(id)) },
+                            onBack = { navState.goBack() }
+                        )
+                    }
+                    else -> throw IllegalArgumentException("Unknown key: $key")
+                }
+            }
+
             NavDisplay(
                 modifier = Modifier.fillMaxSize(),
-                backStack = navState.currentStack,
+                entries = navState.toDecoratedEntries(entryProvider),
                 onBack = { navState.goBack() },
-                entryDecorators = listOf(
-                    rememberSaveableStateHolderNavEntryDecorator(),
-                    rememberViewModelStoreNavEntryDecorator()
-                ),
                 transitionSpec = {
                     (slideInHorizontally(
                         initialOffsetX = { fullWidth -> (fullWidth * 0.25f).toInt() },
@@ -94,43 +128,6 @@ fun Navigation(modifier: Modifier = Modifier) {
                     ) + fadeOut(
                         animationSpec = tween(durationMillis = 200)
                     ))
-                },
-                entryProvider = { key ->
-                    when (key) {
-                        is Home -> NavEntry(key) {
-                            HomeRoute(
-                                modifier = modifier,
-                                onItemClick = { id -> navState.navigate(Detail(id)) },
-                                onSearchClick = { navState.navigate(Search) }
-                            )
-                        }
-                        is Bookmark -> NavEntry(key) {
-                            BookmarkRoute(
-                                modifier = modifier,
-                                onItemClick = { id -> navState.navigate(Detail(id)) }
-                            )
-                        }
-                        is Profile -> NavEntry(key) {
-                            ProfileRoute(
-                                modifier = modifier
-                            )
-                        }
-                        is Detail -> NavEntry(key) {
-                            DetailRoute(
-                                modifier = modifier,
-                                movieId = key.movieId,
-                                onBack = { navState.goBack() },
-                            )
-                        }
-                        is Search -> NavEntry(key) {
-                            SearchRoute(
-                                modifier = modifier,
-                                onItemClick = { id -> navState.navigate(Detail(id)) },
-                                onBack = { navState.goBack() }
-                            )
-                        }
-                        else -> throw IllegalArgumentException("Unknown key: $key")
-                    }
                 }
             )
 
