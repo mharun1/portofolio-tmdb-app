@@ -31,6 +31,7 @@ import androidx.navigation3.ui.NavDisplay
 import com.harun.tmdbapp.ui.screen.bookmark.ui.BookmarkRoute
 import com.harun.tmdbapp.ui.screen.detail.ui.DetailRoute
 import com.harun.tmdbapp.ui.screen.home.ui.HomeRoute
+import com.harun.tmdbapp.ui.screen.profile.ui.ProfileRoute
 import com.harun.tmdbapp.ui.screen.search.ui.SearchRoute
 
 @Composable
@@ -110,12 +111,9 @@ fun Navigation(modifier: Modifier = Modifier) {
                             )
                         }
                         is Profile -> NavEntry(key) {
-                            Box(
-                                modifier = modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text("Profile Screen")
-                            }
+                            ProfileRoute(
+                                modifier = modifier
+                            )
                         }
                         is Detail -> NavEntry(key) {
                             DetailRoute(
