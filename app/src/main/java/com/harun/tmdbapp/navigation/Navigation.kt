@@ -60,7 +60,8 @@ fun Navigation(modifier: Modifier = Modifier) {
                     is Bookmark -> NavEntry(key) {
                         BookmarkRoute(
                             modifier = modifier,
-                            onItemClick = { id -> navState.navigate(Detail(id)) }
+                            onItemClick = { id -> navState.navigate(Detail(id)) },
+                            onExploreClick = { navState.navigate(Home) }
                         )
                     }
                     is Profile -> NavEntry(key) {

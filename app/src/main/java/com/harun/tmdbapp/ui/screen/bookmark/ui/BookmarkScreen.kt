@@ -27,13 +27,15 @@ import com.harun.tmdbapp.ui.screen.bookmark.ui.component.BookmarkItem
 fun BookmarkRoute(
     modifier: Modifier = Modifier,
     viewModel: BookmarkViewModel = hiltViewModel(),
-    onItemClick: (Int) -> Unit
+    onItemClick: (Int) -> Unit,
+    onExploreClick: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     BookmarkScreen(
         uiState = uiState,
         onItemClick = onItemClick,
         onRemoveBookmark = viewModel::removeBookmark,
+        onExploreClick = onExploreClick,
         modifier = modifier
     )
 }
@@ -44,6 +46,7 @@ fun BookmarkScreen(
     uiState: BookmarkUiState,
     onItemClick: (Int) -> Unit,
     onRemoveBookmark: (BookmarkedMovie) -> Unit,
+    onExploreClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -98,6 +101,10 @@ fun BookmarkScreen(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center
                         )
+                        Spacer(Modifier.height(20.dp))
+                        Button(onClick = onExploreClick) {
+                            Text(text = stringResource(id = R.string.bookmark_explore_cta))
+                        }
                     }
                 }
                 is BookmarkUiState.Success -> {
