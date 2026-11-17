@@ -8,7 +8,9 @@ import com.harun.tmdbapp.data.remote.retrofit.network.ApiService
 import com.harun.tmdbapp.data.remote.retrofit.network.Network
 import com.harun.tmdbapp.data.repository.BookmarkRepositoryImpl
 import com.harun.tmdbapp.data.repository.MovieRepository
+import com.harun.tmdbapp.data.repository.PreferencesRepositoryImpl
 import com.harun.tmdbapp.repository.BookmarkRepository
+import com.harun.tmdbapp.repository.PreferencesRepository
 import com.harun.tmdbapp.repository.Repository
 import dagger.Binds
 import dagger.Module
@@ -33,6 +35,12 @@ abstract class DataModule {
     abstract fun bindBookmarkRepository(
         bookmarkRepository: BookmarkRepositoryImpl
     ): BookmarkRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindPreferencesRepository(
+        preferencesRepository: PreferencesRepositoryImpl
+    ): PreferencesRepository
 
     companion object {
         @Provides
