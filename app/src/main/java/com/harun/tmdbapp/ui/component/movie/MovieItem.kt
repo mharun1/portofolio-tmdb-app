@@ -1,7 +1,10 @@
 package com.harun.tmdbapp.ui.component.movie
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -87,7 +90,11 @@ fun MovieItem(
             }
             if (genres.isNotEmpty()) {
                 Spacer(Modifier.height(8.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    maxLines = 2
+                ) {
                     genres.take(3).forEach { genre ->
                         Surface(
                             shape = RoundedCornerShape(100),
@@ -98,10 +105,10 @@ fun MovieItem(
                                 text = genre,
                                 style = MaterialTheme.typography.bodySmall,
                                 fontWeight = FontWeight.Medium,
+                                maxLines = 1,
                                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp),
                             )
                         }
-                        Spacer(Modifier.width(4.dp))
                     }
                 }
             }
