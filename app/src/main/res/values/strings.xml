@@ -43,6 +43,7 @@
     <string name="bookmark_title">Bookmarks</string>
     <string name="bookmark_empty">No Bookmarks Yet</string>
     <string name="bookmark_empty_desc">Save movies from the detail screen to view them here offline.</string>
+    <string name="bookmark_explore_cta">Explore Movies</string>
     <string name="bookmark_remove">Remove bookmark</string>
 
     <!-- Profile & Preferences Screen -->

@@ -36,6 +36,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -71,12 +72,32 @@ fun HomeRoute(
     val nowPlayingUiState by viewModel.nowPlayingUiState.collectAsStateWithLifecycle()
     val selectedCategory by viewModel.selectedCategory.collectAsStateWithLifecycle()
 
+    val listState = rememberLazyListState(
+        initialFirstVisibleItemIndex = viewModel.scrollIndex,
+        initialFirstVisibleItemScrollOffset = viewModel.scrollOffset
+    )
+
+    LaunchedEffect(listState) {
+        snapshotFlow { listState.firstVisibleItemIndex to listState.firstVisibleItemScrollOffset }
+            .collect { (index, offset) ->
+                viewModel.scrollIndex = index
+                viewModel.scrollOffset = offset
+            }
+    }
+
+    LaunchedEffect(movies.itemCount) {
+        if (movies.itemCount > 0 && viewModel.scrollIndex > 0) {
+            listState.scrollToItem(viewModel.scrollIndex, viewModel.scrollOffset)
+        }
+    }
+
     HomeScreen(
         nowPlayingUiState = nowPlayingUiState,
         onRetryNowPlaying = viewModel::retry,
         movies = movies,
         selectedCategory = selectedCategory,
         onCategorySelected = viewModel::onCategorySelected,
+        listState = listState,
         modifier = modifier.fillMaxSize(),
         onItemClick = onItemClick,
         onSearchClick = onSearchClick,

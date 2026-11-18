@@ -35,9 +35,14 @@ class HomeViewModel @Inject constructor(
         }
         .cachedIn(viewModelScope)
 
+    var scrollIndex: Int = 0
+    var scrollOffset: Int = 0
+
     fun onCategorySelected(category: MovieCategory) {
         if (_selectedCategory.value != category) {
             _selectedCategory.value = category
+            scrollIndex = 0
+            scrollOffset = 0
         }
     }
 

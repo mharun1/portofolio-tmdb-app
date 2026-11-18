@@ -19,13 +19,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 
 private object StubBookmarkRepository : BookmarkRepository {
-    override fun getBookmarkedMovies(): Flow<List<BookmarkedMovie>> = emptyFlow()
-    override fun isBookmarked(movieId: Int): Flow<Boolean> = emptyFlow()
-    override fun getUserRating(movieId: Int): Flow<Int?> = emptyFlow()
+    override fun getBookmarkedMovies(): Flow<List<BookmarkedMovie>> = flowOf(emptyList())
+    override fun isBookmarked(movieId: Int): Flow<Boolean> = flowOf(false)
+    override fun getUserRating(movieId: Int): Flow<Int?> = flowOf(null)
     override suspend fun toggleBookmark(movie: BookmarkedMovie) {}
     override suspend fun setUserRating(movieId: Int, rating: Int) {}
     override suspend fun removeBookmark(movieId: Int) {}
@@ -57,15 +57,22 @@ class DetailViewModel @AssistedInject constructor(
         fun create(movieId: Int): DetailViewModel
     }
 
+    private sealed interface DetailLoadState {
+        data object Loading : DetailLoadState
+        data class Loaded(val movie: com.harun.tmdbapp.model.MovieDetail) : DetailLoadState
+        data class Error(val message: String) : DetailLoadState
+    }
+
+    private val _detailLoadState = MutableStateFlow<DetailLoadState>(DetailLoadState.Loading)
+    private var loadJob: Job? = null
+    private var syncJob: Job? = null
+
     private val _uiState = MutableStateFlow<DetailUiState>(DetailUiState.Loading)
     val uiState: StateFlow<DetailUiState> = _uiState.asStateFlow()
 
-    private var loadJob: Job? = null
-    private var bookmarkJob: Job? = null
-
     init {
         loadMovieDetail()
-        observeBookmarkAndRating()
+        observeDetailAndBookmarkState()
     }
 
     fun retry() {
@@ -112,41 +119,38 @@ class DetailViewModel @AssistedInject constructor(
 
     private fun loadMovieDetail() {
         loadJob?.cancel()
+        _detailLoadState.value = DetailLoadState.Loading
         _uiState.value = DetailUiState.Loading
         loadJob = viewModelScope.launch {
             getMovieDetailUseCase(movieId)
                 .onSuccess { movie ->
-                    val currentState = _uiState.value
-                    val isBookmarked = (currentState as? DetailUiState.Success)?.isBookmarked ?: false
-                    val userRating = (currentState as? DetailUiState.Success)?.userRating
-                    _uiState.value = DetailUiState.Success(
-                        movieDetail = movie,
-                        isBookmarked = isBookmarked,
-                        userRating = userRating
-                    )
+                    _detailLoadState.value = DetailLoadState.Loaded(movie)
                 }
                 .onFailure {
-                    _uiState.value = DetailUiState.Error("Couldn't load movie detail. Check your connection.")
+                    _detailLoadState.value = DetailLoadState.Error("Couldn't load movie detail. Check your connection.")
                 }
         }
     }
 
-    private fun observeBookmarkAndRating() {
-        bookmarkJob?.cancel()
-        bookmarkJob = viewModelScope.launch {
+    private fun observeDetailAndBookmarkState() {
+        syncJob?.cancel()
+        syncJob = viewModelScope.launch {
             combine(
+                _detailLoadState,
                 isBookmarkedUseCase(movieId),
                 getUserRatingUseCase(movieId)
-            ) { isBookmarked, rating ->
-                isBookmarked to rating
-            }.collect { (isBookmarked, rating) ->
-                val current = _uiState.value
-                if (current is DetailUiState.Success) {
-                    _uiState.value = current.copy(
+            ) { loadState, isBookmarked, userRating ->
+                when (loadState) {
+                    DetailLoadState.Loading -> DetailUiState.Loading
+                    is DetailLoadState.Error -> DetailUiState.Error(loadState.message)
+                    is DetailLoadState.Loaded -> DetailUiState.Success(
+                        movieDetail = loadState.movie,
                         isBookmarked = isBookmarked,
-                        userRating = rating
+                        userRating = userRating
                     )
                 }
+            }.collect { newState ->
+                _uiState.value = newState
             }
         }
     }

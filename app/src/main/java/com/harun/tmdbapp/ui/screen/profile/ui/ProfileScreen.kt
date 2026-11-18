@@ -57,7 +57,14 @@ fun ProfileScreen(
     modifier: Modifier = Modifier
 ) {
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = {
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier
+                    .navigationBarsPadding()
+                    .padding(bottom = 72.dp)
+            )
+        },
         topBar = {
             TopAppBar(
                 title = {
