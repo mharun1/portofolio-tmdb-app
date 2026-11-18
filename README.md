@@ -13,7 +13,7 @@ A production-grade Android portfolio application built with **Modern Android Dev
 
 | Home (Now Playing & Categories) | Movie Detail & Interactive Rating | Offline Bookmarks & Management |
 | :---: | :---: | :---: |
-| *(Add your screenshot here: `docs/screenshots/home.png`)* | *(Add your screenshot here: `docs/screenshots/detail.png`)* | *(Add your screenshot here: `docs/screenshots/bookmarks.png`)* |
+| ![home.png](docs/screeshots/home.png) | ![detail.png](docs/screeshots/detail.png) | ![bookmarked.png](docs/screeshots/bookmarked.png) |
 
 ---
 
